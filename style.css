@@ -1,0 +1,398 @@
+/* Potatisförsäljning klass 4A — ett stilblad, mobilförst. */
+
+:root {
+  --jord:      #3d2f22;
+  --jord-ljus: #6b5843;
+  --lera:      #f6efe4;
+  --papper:    #fffdf8;
+  --potatis:   #c9922f;
+  --morot:     #d4622a;
+  --blad:      #4f6b3a;
+  --kant:      #e3d7c4;
+  --rad:       14px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 0 20px 48px;
+  background: var(--lera);
+  color: var(--jord);
+  font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+main, .hero, .footer { max-width: 560px; margin: 0 auto; }
+
+/* ---------- Hero ---------- */
+
+.hero { padding: 40px 0 8px; text-align: center; }
+
+.hero__eyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--jord-ljus);
+}
+
+.hero__title {
+  margin: 10px 0 0;
+  font-size: clamp(38px, 12vw, 54px);
+  line-height: 1.02;
+  letter-spacing: -.02em;
+  font-weight: 800;
+}
+
+.hero__lead {
+  margin: 18px auto 0;
+  max-width: 42ch;
+  color: var(--jord-ljus);
+}
+
+.hero__deadline {
+  margin: 24px 0 0;
+  font-size: 15px;
+  color: var(--jord-ljus);
+}
+
+/* ---------- Klasskasse-räknaren ---------- */
+
+.kassa {
+  margin: 28px 0 0;
+  padding: 20px;
+  background: var(--papper);
+  border: 1px solid var(--kant);
+  border-radius: var(--rad);
+}
+
+.kassa__label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--jord-ljus);
+}
+
+.kassa__sum {
+  margin: 6px 0 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--blad);
+  font-variant-numeric: tabular-nums;
+}
+
+.kassa__bar {
+  height: 9px;
+  margin: 14px 0 0;
+  background: var(--lera);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.kassa__fill {
+  height: 100%;
+  width: 0;
+  background: var(--blad);
+  border-radius: 99px;
+  transition: width .9s ease-out;
+}
+
+.kassa__meta {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: var(--jord-ljus);
+}
+
+/* ---------- Sektioner ---------- */
+
+.section { margin: 40px 0 0; }
+
+.section__title {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--jord-ljus);
+}
+
+/* ---------- Varor ---------- */
+
+.varor { margin: 0; padding: 0; list-style: none; }
+
+.vara {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--papper);
+  border: 1px solid var(--kant);
+  border-radius: var(--rad);
+}
+
+.vara + .vara { margin-top: 10px; }
+
+.vara--vald { border-color: var(--potatis); box-shadow: 0 0 0 1px var(--potatis); }
+
+.vara__ikon { font-size: 30px; line-height: 1; }
+
+.vara__text { flex: 1 1 auto; min-width: 0; }
+
+.vara__namn { display: block; font-weight: 700; }
+
+.vara__pris { display: block; font-size: 14px; color: var(--jord-ljus); }
+
+.antal { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+
+.antal__knapp {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--jord);
+  background: var(--lera);
+  border: 1px solid var(--kant);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.antal__knapp:hover:not(:disabled) { background: var(--kant); }
+.antal__knapp:disabled { opacity: .35; cursor: default; }
+
+.antal__varde {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Fält ---------- */
+
+.falt + .falt { margin-top: 14px; }
+
+.falt label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.falt input {
+  width: 100%;
+  padding: 13px 14px;
+  font: inherit;
+  color: var(--jord);
+  background: var(--papper);
+  border: 1px solid var(--kant);
+  border-radius: 10px;
+}
+
+.falt input:focus-visible,
+.antal__knapp:focus-visible,
+.skicka:focus-visible,
+.stang:focus-visible,
+.kopiera:focus-visible {
+  outline: 2px solid var(--morot);
+  outline-offset: 2px;
+}
+
+.falt .input--fel { border-color: var(--morot); }
+
+/* ---------- Summa ---------- */
+
+.summa {
+  margin: 36px 0 0;
+  padding: 18px 20px;
+  background: var(--papper);
+  border: 1px solid var(--kant);
+  border-radius: var(--rad);
+}
+
+.summa__rad {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 19px;
+}
+
+.summa__rad strong { font-size: 26px; font-variant-numeric: tabular-nums; }
+
+.summa__vinst {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--blad);
+}
+
+/* ---------- Knappar ---------- */
+
+.skicka {
+  display: block;
+  width: 100%;
+  margin: 18px 0 0;
+  padding: 17px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--blad);
+  border: 0;
+  border-radius: var(--rad);
+  cursor: pointer;
+}
+
+.skicka:hover:not(:disabled) { background: #435c31; }
+.skicka:disabled { opacity: .6; cursor: default; }
+
+.fel {
+  margin: 16px 0 0;
+  padding: 13px 15px;
+  font-size: 15px;
+  color: #7c2d12;
+  background: #fdece3;
+  border: 1px solid #f3c7b0;
+  border-radius: 10px;
+}
+
+.finstilt {
+  margin: 16px 0 0;
+  font-size: 14px;
+  text-align: center;
+  color: var(--jord-ljus);
+}
+
+.footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--kant);
+  font-size: 14px;
+  text-align: center;
+  color: var(--jord-ljus);
+}
+
+/* ---------- Celebration ---------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+  background: rgba(61, 47, 34, .55);
+  animation: tona .25s ease-out;
+}
+
+/* hidden-attributet måste slå display:flex ovan. */
+.overlay[hidden] { display: none; }
+
+.konfetti {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tack {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding: 30px 26px;
+  text-align: center;
+  background: var(--papper);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(61, 47, 34, .3);
+  animation: upp .35s cubic-bezier(.2, .9, .3, 1.1);
+}
+
+.tack__eyebrow {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--jord-ljus);
+}
+
+.tack__rubrik {
+  margin: 8px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tack__belopp {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--blad);
+  font-variant-numeric: tabular-nums;
+}
+
+.tack__lista {
+  margin: 22px 0 0;
+  padding: 16px 0;
+  list-style: none;
+  border-top: 1px solid var(--kant);
+  border-bottom: 1px solid var(--kant);
+  font-size: 15px;
+}
+
+.tack__lista li { display: flex; justify-content: space-between; gap: 12px; }
+.tack__lista li + li { margin-top: 6px; }
+
+.tack__swish { margin: 20px 0 0; }
+.tack__swishrad { margin: 0; font-size: 15px; }
+
+.kopiera {
+  margin: 12px 0 0;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--jord);
+  background: var(--lera);
+  border: 1px solid var(--kant);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.tack__gemensamt {
+  margin: 20px 0 0;
+  font-size: 15px;
+  color: var(--blad);
+}
+
+.stang {
+  width: 100%;
+  margin: 24px 0 0;
+  padding: 15px;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--jord);
+  border: 0;
+  border-radius: var(--rad);
+  cursor: pointer;
+}
+
+@keyframes tona { from { opacity: 0 } to { opacity: 1 } }
+@keyframes upp  { from { opacity: 0; transform: translateY(16px) scale(.97) } to { opacity: 1; transform: none } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

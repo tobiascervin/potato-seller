@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Potatis &amp; rotfrukter — klass 4A</title>
+<meta name="description" content="Beställ potatis, lök och morötter från gården. Överskottet går till klass 4A:s klasskassa.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero__eyebrow">Klass 4A säljer</p>
+  <h1 class="hero__title">Potatis, lök<br>&amp; morötter</h1>
+  <p class="hero__lead">
+    Svenska rotfrukter direkt från gården. Hela överskottet går till klasskassan —
+    till klassresan, utflykter och sånt som gör fyran roligare.
+  </p>
+
+  <div class="kassa" id="kassa" hidden>
+    <p class="kassa__label">Hittills insamlat till klasskassan</p>
+    <p class="kassa__sum"><span id="kassa-sum">0</span> kr</p>
+    <div class="kassa__bar" id="kassa-bar" hidden>
+      <div class="kassa__fill" id="kassa-fill"></div>
+    </div>
+    <p class="kassa__meta" id="kassa-meta"></p>
+  </div>
+
+  <p class="hero__deadline">
+    Sista beställningsdag: <strong id="sista-dag">—</strong>
+  </p>
+</header>
+
+<main>
+  <form id="order" novalidate>
+
+    <section class="section">
+      <h2 class="section__title">Vad vill du ha?</h2>
+      <ul class="varor" id="varor"></ul>
+    </section>
+
+    <section class="section">
+      <h2 class="section__title">Dina uppgifter</h2>
+      <div class="falt">
+        <label for="namn">Namn</label>
+        <input id="namn" name="namn" type="text" autocomplete="name" required>
+      </div>
+      <div class="falt">
+        <label for="telefon">Telefon</label>
+        <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required>
+      </div>
+      <div class="falt">
+        <label for="epost">E-post</label>
+        <input id="epost" name="epost" type="email" autocomplete="email" inputmode="email" required>
+      </div>
+    </section>
+
+    <div class="summa" aria-live="polite">
+      <div class="summa__rad">
+        <span>Att betala</span>
+        <strong><span id="summa-total">0</span> kr</strong>
+      </div>
+      <p class="summa__vinst">
+        varav <strong><span id="summa-vinst">0</span> kr</strong> går till klasskassan
+      </p>
+    </div>
+
+    <p class="fel" id="fel" role="alert" hidden></p>
+
+    <button class="skicka" id="skicka" type="submit">Skicka beställning</button>
+
+    <p class="finstilt">
+      Betalning sker med Swish vid utlämning. Vi hör av oss när varorna är här.
+    </p>
+  </form>
+</main>
+
+<footer class="footer">
+  <p>Klass 4A:s potatisförsäljning. Frågor? Hör av dig till någon av klassföräldrarna.</p>
+</footer>
+
+<div class="overlay" id="overlay" hidden>
+  <canvas class="konfetti" id="konfetti" aria-hidden="true"></canvas>
+  <div class="tack" role="dialog" aria-modal="true" aria-labelledby="tack-rubrik" id="tack">
+    <p class="tack__eyebrow">Tack!</p>
+    <h2 class="tack__rubrik" id="tack-rubrik">
+      Du gav klassen<br><span class="tack__belopp" id="tack-belopp">0 kr</span>
+    </h2>
+
+    <ul class="tack__lista" id="tack-lista"></ul>
+
+    <div class="tack__swish">
+      <p class="tack__swishrad">
+        Swisha <strong><span id="tack-summa">0</span> kr</strong> till
+        <strong id="tack-swishnr">—</strong> vid utlämning.
+      </p>
+      <button type="button" class="kopiera" id="kopiera">Kopiera beloppet</button>
+    </div>
+
+    <p class="tack__gemensamt" id="tack-gemensamt" hidden></p>
+
+    <button type="button" class="stang" id="stang">Klart</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
