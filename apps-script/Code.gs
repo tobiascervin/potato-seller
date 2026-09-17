@@ -14,6 +14,16 @@ var SHEET_ID = 'KLISTRA_IN_SHEET_ID_HÄR';
 
 var FLIK = 'Beställningar';
 
+// Bekräftelsemejl till köparen. Sätt till false för att stänga av helt.
+var SKICKA_BEKRAFTELSE = true;
+
+// Visningsnamnet köparen ser som avsändare. Själva adressen blir det Google-konto
+// som publicerat scriptet — det går inte att ändra i Apps Script.
+var AVSANDARNAMN = 'Klass 4, Rocknebyskolan';
+
+// Text i mejlet om utlämningen. Uppdatera när plats och tid är bestämda.
+var UTLAMNING = 'Vi hör av oss när varorna är här och berättar var och när de kan hämtas.';
+
 // Måste matcha PRODUKTER i app.js — samma id, samma priser.
 var PRODUKTER = [
   { id: 'kingedward', namn: 'King Edward 10 kg', inkop: 75, pris: 130 },
@@ -68,6 +78,16 @@ function doPost(e) {
 
     blad().appendRow(rad);
 
+    // Egen try/catch: ett trasigt mejl får aldrig se ut som en misslyckad
+    // beställning. Raden ligger redan i Sheetet när vi kommer hit.
+    if (SKICKA_BEKRAFTELSE && data.epost) {
+      try {
+        skickaBekraftelse(data, antal, summa, vinst);
+      } catch (mailFel) {
+        Logger.log('Bekräftelsemejl misslyckades: %s', mailFel);
+      }
+    }
+
     return svara({ ok: true, vinst: totalVinst() }, null);
   } catch (err) {
     return svara({ ok: false, fel: String(err) }, null);
@@ -100,6 +120,85 @@ function summeraKolumn(index) {
 
 function antalRader() {
   return Math.max(0, blad().getLastRow() - 1);
+}
+
+/**
+ * Bekräftelse till köparen med underlaget för ordern.
+ * Skickas från det konto som publicerat scriptet, med AVSANDARNAMN som visningsnamn.
+ */
+function skickaBekraftelse(data, antal, summa, vinst) {
+  var poster = [];
+  for (var i = 0; i < PRODUKTER.length; i++) {
+    if (antal[i] > 0) {
+      poster.push({
+        namn: PRODUKTER[i].namn,
+        antal: antal[i],
+        belopp: PRODUKTER[i].pris * antal[i]
+      });
+    }
+  }
+
+  var text = 'Hej ' + data.namn + '!\n\n'
+    + 'Tack för din beställning. Här är underlaget:\n\n'
+    + poster.map(function (p) {
+        return '  ' + p.namn + ' × ' + p.antal + '   ' + kronor(p.belopp) + ' kr';
+      }).join('\n')
+    + '\n\n  Att betala: ' + kronor(summa) + ' kr'
+    + '\n  Varav till klasskassan: ' + kronor(vinst) + ' kr\n\n'
+    + 'Betalning sker med Swish vid utlämningen. ' + UTLAMNING + '\n\n'
+    + 'Varorna kommer från Niklas på Norrgårdens Grönsaker i Ventlinge på Öland.\n\n'
+    + 'Vill du ändra eller avbeställa? Svara på det här mejlet.\n\n'
+    + 'Tack för att du stöttar klassen!\n'
+    + AVSANDARNAMN + '\n\n'
+    + '---\n'
+    + 'Dina uppgifter: ' + data.namn + ', ' + data.telefon + ', ' + data.epost;
+
+  var html = '<div style="font-family:-apple-system,Segoe UI,sans-serif;'
+    + 'font-size:15px;color:#3d2f22;max-width:520px">'
+    + '<p>Hej ' + escapeHtml(data.namn) + '!</p>'
+    + '<p>Tack för din beställning. Här är underlaget:</p>'
+    + '<table cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%">'
+    + poster.map(function (p) {
+        return '<tr>'
+          + '<td style="border-bottom:1px solid #e3d7c4">'
+          + escapeHtml(p.namn) + ' × ' + p.antal + '</td>'
+          + '<td align="right" style="border-bottom:1px solid #e3d7c4;white-space:nowrap">'
+          + kronor(p.belopp) + ' kr</td></tr>';
+      }).join('')
+    + '<tr><td style="padding-top:10px"><strong>Att betala</strong></td>'
+    + '<td align="right" style="padding-top:10px"><strong>' + kronor(summa) + ' kr</strong></td></tr>'
+    + '<tr><td colspan="2" style="color:#4f6b3a">Varav ' + kronor(vinst)
+    + ' kr går till klasskassan.</td></tr>'
+    + '</table>'
+    + '<p>Betalning sker med <strong>Swish vid utlämningen</strong>. '
+    + escapeHtml(UTLAMNING) + '</p>'
+    + '<p>Varorna kommer från Niklas på Norrgårdens Grönsaker i Ventlinge på Öland.</p>'
+    + '<p>Vill du ändra eller avbeställa? Svara på det här mejlet.</p>'
+    + '<p>Tack för att du stöttar klassen!<br>' + escapeHtml(AVSANDARNAMN) + '</p>'
+    + '<hr style="border:0;border-top:1px solid #e3d7c4">'
+    + '<p style="font-size:13px;color:#6b5843">Dina uppgifter: '
+    + escapeHtml(data.namn) + ', ' + escapeHtml(data.telefon) + ', '
+    + escapeHtml(data.epost) + '</p>'
+    + '</div>';
+
+  MailApp.sendEmail({
+    to: data.epost,
+    name: AVSANDARNAMN,
+    subject: 'Din beställning: potatis och rotfrukter — ' + kronor(summa) + ' kr',
+    body: text,
+    htmlBody: html
+  });
+}
+
+/* 1 234 i stället för 1234, som på sidan. */
+function kronor(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}
+
+function escapeHtml(v) {
+  return String(v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function svara(obj, callback) {

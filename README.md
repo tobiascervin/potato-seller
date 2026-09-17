@@ -97,6 +97,36 @@ Sheetet som *Redigerare* så att alla kan bocka av betalt och utlämnat.
 Radera GitHub-repot och Google Sheetet. Ta också bort deploymenten i Apps Script
 (**Deploy → Manage deployments → Archive**) så att URL:en slutar svara.
 
+## Bekräftelsemejl
+
+Köparen får ett mejl med orderunderlaget direkt när beställningen skickas — sorter,
+antal, summa, vad som går till klasskassan, och att betalning sker med Swish vid
+utlämningen.
+
+Mejlet skickas av **det Google-konto som publicerat scriptet**. Det går inte att ändra i
+Apps Script, så köparen ser den adressen och svar hamnar i den inkorgen. Köparen ser
+`AVSANDARNAMN` ("Klass 4, Rocknebyskolan") som avsändarnamn.
+
+Kvoten är 100 mejl per dag på ett vanligt Gmail-konto (1 500 på Workspace) — långt mer
+än en klassomgång behöver.
+
+Inställningarna ligger högst upp i [`apps-script/Code.gs`](apps-script/Code.gs):
+
+```js
+var SKICKA_BEKRAFTELSE = true;                      // false stänger av utskicket
+var AVSANDARNAMN = 'Klass 4, Rocknebyskolan';
+var UTLAMNING = 'Vi hör av oss när varorna är här...';   // uppdatera när plats är bestämd
+```
+
+> **Lägger du till mejlutskicket efter att ni redan satt upp scriptet** måste ni
+> publicera om det: Google behöver godkänna den nya behörigheten att skicka mejl.
+> **Deploy → Manage deployments → pennan → Version: New version → Deploy**, och godkänn
+> behörigheterna när frågan kommer.
+
+Om utskicket misslyckas ligger beställningen ändå kvar i Sheetet — mejlet har ett eget
+felskydd och kan inte sänka beställningen. Misslyckade utskick loggas i Apps Script
+under **Executions**.
+
 ## Validering av kunduppgifter
 
 Formuläret släpper inte igenom en beställning förrän namn, telefon och e-post är
