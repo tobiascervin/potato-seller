@@ -209,6 +209,95 @@ function jsonp() {
 
 hamtaKassa();
 
+/* ---------- Validering ---------- */
+
+/* Plockar bort mellanslag, bindestreck, punkter och parenteser, och gör
+   +46/0046 till en vanlig nolla. "+46 70 123 45 67" blir "0701234567". */
+function normaliseraTelefon(v) {
+  return v.replace(/[\s\-().\/]/g, '')
+          .replace(/^\+46/, '0')
+          .replace(/^0046/, '0');
+}
+
+/* Svenska mobilnummer: 070, 072, 073, 076, 079 + sju siffror. */
+const MOBIL = /^07[02369]\d{7}$/;
+/* Fast telefoni: riktnummer + abonnentnummer, totalt 8-10 siffror. */
+const FASTNAT = /^0[1-9]\d{6,8}$/;
+/* Kräver tecken före @, efter @, och en toppdomän på minst två bokstäver.
+   type="email" släpper igenom "a@b" — det gör inte den här. */
+const EPOST = /^[^\s@]+@[^\s@]+\.[a-zA-ZåäöÅÄÖ]{2,}$/;
+
+const FALT = [
+  {
+    id: 'namn',
+    kontrollera(v) {
+      if (!v) return 'Fyll i ditt namn.';
+      if (v.length < 2) return 'Namnet ser för kort ut.';
+      return null;
+    },
+  },
+  {
+    id: 'telefon',
+    kontrollera(v) {
+      if (!v) return 'Fyll i ditt telefonnummer.';
+      const n = normaliseraTelefon(v);
+      if (n.startsWith('+')) return 'Vi kan bara nå svenska nummer — skriv det som 070-123 45 67.';
+      if (!/^\d+$/.test(n)) return 'Telefonnummer ska bara innehålla siffror.';
+      if (!n.startsWith('0')) return 'Skriv numret som 070-123 45 67 eller +46 70 123 45 67.';
+      if (MOBIL.test(n) || FASTNAT.test(n)) return null;
+      return n.length < 8 ? 'Numret ser för kort ut.'
+           : n.length > 11 ? 'Numret ser för långt ut.'
+           : 'Kontrollera numret — t.ex. 070-123 45 67.';
+    },
+    /* Spara numret i normaliserad form, så Sheetet blir enhetligt. */
+    stada: normaliseraTelefon,
+  },
+  {
+    id: 'epost',
+    kontrollera(v) {
+      if (!v) return 'Fyll i din e-postadress.';
+      if (!v.includes('@')) return 'E-postadressen saknar @.';
+      if (!EPOST.test(v)) return 'E-postadressen ser inte riktig ut.';
+      return null;
+    },
+    stada: v => v.toLowerCase(),
+  },
+];
+
+function visaFaltfel(falt, text) {
+  const input = document.getElementById(falt.id);
+  const felrad = document.getElementById('fel-' + falt.id);
+
+  input.classList.toggle('input--fel', Boolean(text));
+  input.setAttribute('aria-invalid', text ? 'true' : 'false');
+  felrad.textContent = text || '';
+  felrad.hidden = !text;
+}
+
+/* Returnerar första ogiltiga fältet, eller null om allt är ifyllt och rimligt. */
+function granskaAlla() {
+  let forsta = null;
+  FALT.forEach(falt => {
+    const v = document.getElementById(falt.id).value.trim();
+    const fel = falt.kontrollera(v);
+    visaFaltfel(falt, fel);
+    if (fel && !forsta) forsta = falt;
+  });
+  return forsta;
+}
+
+/* Visa fel när man lämnar fältet, men göm det så fort man rättar — att bli
+   tillrättavisad medan man skriver är irriterande. */
+FALT.forEach(falt => {
+  const input = document.getElementById(falt.id);
+  input.addEventListener('blur', () => {
+    if (input.value.trim()) visaFaltfel(falt, falt.kontrollera(input.value.trim()));
+  });
+  input.addEventListener('input', () => {
+    if (input.classList.contains('input--fel')) visaFaltfel(falt, null);
+  });
+});
+
 /* ---------- Skicka beställningen ---------- */
 
 const form = document.getElementById('order');
@@ -219,30 +308,24 @@ form.addEventListener('submit', async e => {
   e.preventDefault();
   felEl.hidden = true;
 
-  const namn = document.getElementById('namn');
-  const telefon = document.getElementById('telefon');
-  const epost = document.getElementById('epost');
-
-  [namn, telefon, epost].forEach(f => f.classList.remove('input--fel'));
-
   if (valda().length === 0) return visaFel('Välj minst en vara innan du skickar.');
 
-  const tomma = [namn, telefon, epost].filter(f => !f.value.trim());
-  if (tomma.length) {
-    tomma.forEach(f => f.classList.add('input--fel'));
-    tomma[0].focus();
-    return visaFel('Fyll i namn, telefon och e-post så vi kan nå dig.');
-  }
-  if (!epost.checkValidity()) {
-    epost.classList.add('input--fel');
-    epost.focus();
-    return visaFel('E-postadressen ser inte riktig ut.');
+  const trasigt = granskaAlla();
+  if (trasigt) {
+    document.getElementById(trasigt.id).focus();
+    return visaFel('Kontrollera dina uppgifter så vi kan nå dig om beställningen.');
   }
 
+  const varde = id => {
+    const falt = FALT.find(f => f.id === id);
+    const v = document.getElementById(id).value.trim();
+    return falt.stada ? falt.stada(v) : v;
+  };
+
   const bestallning = {
-    namn: namn.value.trim(),
-    telefon: telefon.value.trim(),
-    epost: epost.value.trim(),
+    namn: varde('namn'),
+    telefon: varde('telefon'),
+    epost: varde('epost'),
     varor: Object.fromEntries(PRODUKTER.map(p => [p.id, antal[p.id]])),
   };
   const dinaKr = total();
@@ -349,10 +432,9 @@ function nollstall() {
   });
   ritaSumma();
 
-  ['namn', 'telefon', 'epost'].forEach(id => {
-    const f = document.getElementById(id);
-    f.value = '';
-    f.classList.remove('input--fel');
+  FALT.forEach(falt => {
+    document.getElementById(falt.id).value = '';
+    visaFaltfel(falt, null);
   });
 
   felEl.hidden = true;

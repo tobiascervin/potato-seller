@@ -217,7 +217,13 @@ main, .hero, .footer { max-width: 560px; margin: 0 auto; }
   outline-offset: 2px;
 }
 
-.falt .input--fel { border-color: var(--morot); }
+.falt .input--fel { border-color: var(--morot); background: #fffaf7; }
+
+.falt__fel {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  color: #a63c12;
+}
 
 /* ---------- Summa ---------- */
 

@@ -97,6 +97,22 @@ Sheetet som *Redigerare* så att alla kan bocka av betalt och utlämnat.
 Radera GitHub-repot och Google Sheetet. Ta också bort deploymenten i Apps Script
 (**Deploy → Manage deployments → Archive**) så att URL:en slutar svara.
 
+## Validering av kunduppgifter
+
+Formuläret släpper inte igenom en beställning förrän namn, telefon och e-post är
+ifyllda och ser rimliga ut. Felen visas under respektive fält.
+
+- **Telefon** godtar mobil (070, 072, 073, 076, 079) och fast telefoni, skrivet med
+  mellanslag, bindestreck eller parenteser. `+46` och `0046` översätts till `0`.
+  Numret sparas normaliserat i Sheetet — `+46 70 123 45 67` blir `0701234567` — så att
+  kolumnen blir enhetlig och sökbar.
+- **E-post** kräver tecken före och efter `@` samt en toppdomän. Sparas i gemener.
+  (`type="email"` släpper i sig igenom `a@b`, så regeln i `app.js` är strängare.)
+- **Namn** måste vara minst två tecken.
+
+Reglerna ligger i `FALT` i [`app.js`](app.js). Vill ni mjuka upp något — t.ex. tillåta
+utländska nummer — är det en rad där.
+
 ## Testa lokalt
 
 ```bash

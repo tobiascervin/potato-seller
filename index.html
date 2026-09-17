@@ -44,15 +44,21 @@
       <h2 class="section__title">Dina uppgifter</h2>
       <div class="falt">
         <label for="namn">Namn</label>
-        <input id="namn" name="namn" type="text" autocomplete="name" required>
+        <input id="namn" name="namn" type="text" autocomplete="name"
+               aria-describedby="fel-namn" required>
+        <p class="falt__fel" id="fel-namn" hidden></p>
       </div>
       <div class="falt">
         <label for="telefon">Telefon</label>
-        <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required>
+        <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel"
+               placeholder="070-123 45 67" aria-describedby="fel-telefon" required>
+        <p class="falt__fel" id="fel-telefon" hidden></p>
       </div>
       <div class="falt">
         <label for="epost">E-post</label>
-        <input id="epost" name="epost" type="email" autocomplete="email" inputmode="email" required>
+        <input id="epost" name="epost" type="email" autocomplete="email" inputmode="email"
+               placeholder="namn@exempel.se" aria-describedby="fel-epost" required>
+        <p class="falt__fel" id="fel-epost" hidden></p>
       </div>
     </section>
 
