@@ -17,9 +17,6 @@ const PRODUKTER = [
 /* Klistra in /exec-URL:en från Apps Script här (se README.md steg 3). */
 const SCRIPT_URL = '';
 
-/* Swish-nummer som visas vid utlämning. */
-const SWISH_NUMMER = '123 456 78 90';
-
 /* Sista beställningsdag — ren text, skriv som du vill. */
 const SISTA_DAG = 'söndag 18 oktober';
 
@@ -148,7 +145,6 @@ function ritaSumma() {
 /* ---------- Statisk text ---------- */
 
 document.getElementById('sista-dag').textContent = SISTA_DAG;
-document.getElementById('tack-swishnr').textContent = SWISH_NUMMER;
 ritaSumma();
 
 /* ---------- Klasskasse-räknaren ---------- */
@@ -368,17 +364,6 @@ stangBtn.addEventListener('click', stangTack);
 overlay.addEventListener('click', e => { if (e.target === overlay) stangTack(); });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !overlay.hidden) stangTack();
-});
-
-document.getElementById('kopiera').addEventListener('click', async e => {
-  const belopp = document.getElementById('tack-summa').textContent.replace(/\s/g, '');
-  try {
-    await navigator.clipboard.writeText(belopp);
-    e.target.textContent = 'Kopierat!';
-    setTimeout(() => { e.target.textContent = 'Kopiera beloppet'; }, 2000);
-  } catch {
-    e.target.textContent = 'Kunde inte kopiera';
-  }
 });
 
 /* ---------- Konfetti ---------- */

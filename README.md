@@ -69,14 +69,16 @@ Tryck **Deploy** och kopiera **Web app-URL:en** (den slutar på `/exec`).
 > totalsummor.
 
 ### 4. Fyll i sidan
-Öppna [`app.js`](app.js) och sätt de fyra konstanterna högst upp:
+Öppna [`app.js`](app.js) och sätt de tre konstanterna högst upp:
 
 ```js
-const SCRIPT_URL   = 'https://script.google.com/.../exec';  // från steg 3
-const SWISH_NUMMER = '123 456 78 90';
-const SISTA_DAG    = 'söndag 18 oktober';
-const MAL_KR       = 5000;   // null om ni inte vill visa någon progressbar
+const SCRIPT_URL = 'https://script.google.com/.../exec';  // från steg 3
+const SISTA_DAG  = 'söndag 18 oktober';
+const MAL_KR     = 5000;   // null om ni inte vill visa någon progressbar
 ```
+
+Sidan visar inget Swish-nummer — den konstaterar bara att köparen swishar vid
+utlämningen. Ni uppger numret på plats.
 
 ### 5. Publicera sidan
 ```bash
