@@ -1,5 +1,5 @@
 /**
- * Potatisförsäljning klass 4A — mottagare och läsare.
+ * Potatisförsäljning klass 4, Rocknebyskolan — mottagare och läsare.
  *
  * Klistras in i Apps Script kopplat till Google Sheetet (se README.md).
  *
@@ -16,10 +16,12 @@ var FLIK = 'Beställningar';
 
 // Måste matcha PRODUKTER i app.js — samma id, samma priser.
 var PRODUKTER = [
-  { id: 'potatis',  namn: 'Potatis 10 kg',  inkop: 75, pris: 130 },
-  { id: 'morotter', namn: 'Morötter 5 kg',  inkop: 40, pris: 75  },
-  { id: 'gullok',   namn: 'Gul lök 5 kg',   inkop: 40, pris: 75  },
-  { id: 'rodlok',   namn: 'Röd lök 5 kg',   inkop: 40, pris: 75  }
+  { id: 'kingedward', namn: 'King Edward 10 kg', inkop: 75, pris: 130 },
+  { id: 'inova',      namn: 'Inova 10 kg',       inkop: 75, pris: 130 },
+  { id: 'bintje',     namn: 'Bintje 10 kg',      inkop: 75, pris: 130 },
+  { id: 'gullok',     namn: 'Gul lök 5 kg',      inkop: 40, pris: 75  },
+  { id: 'rodlok',     namn: 'Röd lök 5 kg',      inkop: 40, pris: 75  },
+  { id: 'morotter',   namn: 'Morötter 5 kg',     inkop: 40, pris: 75  }
 ];
 
 /* ---- Härifrån och ner: rör inte ---- */

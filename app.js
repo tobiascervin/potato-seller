@@ -2,13 +2,16 @@
    ÄNDRA HÄR — allt du behöver pilla på ligger i det här blocket.
    ============================================================ */
 
-/* Produkterna. `inkop` = vad vi betalar bonden, `pris` = vad kunden betalar.
-   Skillnaden är vinsten till klasskassan och räknas ut automatiskt. */
+/* Produkterna. `inkop` = vad vi betalar Niklas, `pris` = vad kunden betalar.
+   Skillnaden är vinsten till klasskassan och räknas ut automatiskt.
+   `ikon` pekar på en av ikonerna längre ner i filen. */
 const PRODUKTER = [
-  { id: 'potatis',  namn: 'Potatis',    enhet: '10 kg', inkop: 75, pris: 130, ikon: '🥔' },
-  { id: 'morotter', namn: 'Morötter',   enhet: '5 kg',  inkop: 40, pris: 75,  ikon: '🥕' },
-  { id: 'gullok',   namn: 'Gul lök',    enhet: '5 kg',  inkop: 40, pris: 75,  ikon: '🧅' },
-  { id: 'rodlok',   namn: 'Röd lök',    enhet: '5 kg',  inkop: 40, pris: 75,  ikon: '🧅' },
+  { id: 'kingedward', namn: 'King Edward', sort: 'mjölig',      enhet: '10 kg', inkop: 75, pris: 130, ikon: 'potatis' },
+  { id: 'inova',      namn: 'Inova',       sort: 'fast',        enhet: '10 kg', inkop: 75, pris: 130, ikon: 'potatis' },
+  { id: 'bintje',     namn: 'Bintje',      sort: 'mellan-fast', enhet: '10 kg', inkop: 75, pris: 130, ikon: 'potatis' },
+  { id: 'gullok',     namn: 'Gul lök',     sort: '',            enhet: '5 kg',  inkop: 40, pris: 75,  ikon: 'gullok'  },
+  { id: 'rodlok',     namn: 'Röd lök',     sort: '',            enhet: '5 kg',  inkop: 40, pris: 75,  ikon: 'rodlok'  },
+  { id: 'morotter',   namn: 'Morötter',    sort: '',            enhet: '5 kg',  inkop: 40, pris: 75,  ikon: 'morot'   },
 ];
 
 /* Klistra in /exec-URL:en från Apps Script här (se README.md steg 3). */
@@ -18,7 +21,7 @@ const SCRIPT_URL = '';
 const SWISH_NUMMER = '123 456 78 90';
 
 /* Sista beställningsdag — ren text, skriv som du vill. */
-const SISTA_DAG = 'söndag 5 oktober';
+const SISTA_DAG = 'söndag 18 oktober';
 
 /* Valfritt insamlingsmål i kronor. Sätt till null för att dölja progressbaren. */
 const MAL_KR = 5000;
@@ -48,6 +51,52 @@ function valda() {
   return PRODUKTER.filter(p => antal[p.id] > 0);
 }
 
+/* ---------- Ikoner ---------- */
+/* Egna SVG:er i stället för emoji. Unicode har ingen röd lök — bara 🧅 — så
+   gul och röd lök skulle annars se exakt likadana ut. Egna ikoner ser dessutom
+   likadana ut i alla webbläsare. */
+
+const IKONER = {
+  potatis: `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <ellipse cx="16" cy="16.5" rx="13" ry="9.5"
+               transform="rotate(-16 16 16.5)" fill="#cfa469"/>
+      <path d="M6 13c3-4 9-5 14-3" stroke="#e0bb8b" stroke-width="2.4"
+            fill="none" stroke-linecap="round"/>
+      <circle cx="12" cy="14" r="1.15" fill="#9d7541"/>
+      <circle cx="19" cy="12.5" r=".95" fill="#9d7541"/>
+      <circle cx="17" cy="20" r="1.05" fill="#9d7541"/>
+      <circle cx="23" cy="18" r=".85" fill="#9d7541"/>
+    </svg>`,
+
+  gullok: lok('#e8c25c', '#c79a32', '#f3dc9e'),
+  rodlok: lok('#a9497f', '#7e3260', '#c87aa6'),
+
+  morot: `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M14 8c1-3 3-4 5-4-1 2-1 3-1 4z" fill="#5f8340"/>
+      <path d="M17 8c2-2.6 4.5-3 6.5-2.4-1.8 1.4-2.5 2.4-3 3.4z" fill="#4f6b3a"/>
+      <path d="M16 29.5 10.2 13.4Q16 10.4 21.8 13.4Z" fill="#dd6b28"/>
+      <path d="M12.4 17.5h6.2M13.6 21.5h4.4" stroke="#b74f18"
+            stroke-width="1.3" stroke-linecap="round"/>
+    </svg>`,
+};
+
+/* Löken delar form mellan gul och röd — bara färgerna skiljer. */
+function lok(skal, skugga, ljus) {
+  return `
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M16 6.5c1.5 1.6 2.2 2.6 2.2 2.6h-4.4S14.5 8.1 16 6.5z" fill="#5f8340"/>
+      <path d="M16 8c5.4 5.2 10 9.2 10 14.1 0 4.6-4.5 7.9-10 7.9S6 26.7 6 22.1C6 17.2 10.6 13.2 16 8z"
+            fill="${skal}"/>
+      <path d="M16 8c5.4 5.2 10 9.2 10 14.1 0 4.6-4.5 7.9-10 7.9V8z"
+            fill="${skugga}" opacity=".55"/>
+      <path d="M16 9.5V29M11.2 12.8C9 16 8 19 8 22.1c0 2.4 1.3 4.4 3.3 5.6M20.8 12.8C23 16 24 19 24 22.1c0 2.4-1.3 4.4-3.3 5.6"
+            stroke="${ljus}" stroke-width="1.1" fill="none"
+            stroke-linecap="round" opacity=".8"/>
+    </svg>`;
+}
+
 /* ---------- Rendera varorna ---------- */
 
 const varorEl = document.getElementById('varor');
@@ -56,11 +105,13 @@ PRODUKTER.forEach(p => {
   const li = document.createElement('li');
   li.className = 'vara';
   li.dataset.id = p.id;
+  const sort = p.sort ? ` · ${p.sort}` : '';
   li.innerHTML = `
-    <span class="vara__ikon" aria-hidden="true">${p.ikon}</span>
+    <span class="vara__ikon">${IKONER[p.ikon]}</span>
     <span class="vara__text">
       <span class="vara__namn">${p.namn}</span>
-      <span class="vara__pris">${p.enhet} — ${kr(p.pris)} kr</span>
+      <span class="vara__meta">${p.enhet}${sort}</span>
+      <span class="vara__belopp">${kr(p.pris)} kr</span>
     </span>
     <span class="antal">
       <button type="button" class="antal__knapp" data-steg="-1"

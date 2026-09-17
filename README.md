@@ -1,7 +1,8 @@
-# Potatisförsäljning — klass 4A
+# Öländsk potatis — klass 4, Rocknebyskolan
 
-En liten statisk beställningssida för klassens potatis-, lök- och morotsförsäljning.
-Beställningarna landar som rader i ett Google Sheet som alla klassföräldrar kan öppna.
+En liten statisk beställningssida för klassens försäljning av öländsk potatis, lök och
+morötter från Niklas på Norrgårdens Grönsaker i Ventlinge. Beställningarna landar som
+rader i ett Google Sheet som alla klassföräldrar kan öppna.
 
 **Engångsbruk.** Radera repot och Sheetet när omgången är klar.
 
@@ -17,21 +18,30 @@ ser ni vem som köpt vad, vad ni sålt för, och vad som blir kvar till klasskas
 
 ## Sortiment
 
-| Vara | Inköp från bonden | Vårt pris | Till klasskassan |
+Potatisen finns i tre sorter, som köparen väljer mellan:
+
+| Vara | Inköp från Niklas | Vårt pris | Till klasskassan |
 |---|---|---|---|
-| Potatis 10 kg | 75 kr | 130 kr | 55 kr |
-| Morötter 5 kg | 40 kr | 75 kr | 35 kr |
+| King Edward 10 kg (mjölig) | 75 kr | 130 kr | 55 kr |
+| Inova 10 kg (fast) | 75 kr | 130 kr | 55 kr |
+| Bintje 10 kg (mellan-fast) | 75 kr | 130 kr | 55 kr |
 | Gul lök 5 kg | 40 kr | 75 kr | 35 kr |
 | Röd lök 5 kg | 40 kr | 75 kr | 35 kr |
+| Morötter 5 kg | 40 kr | 75 kr | 35 kr |
 
-Priserna ändras på **två** ställen, som måste stämma med varandra:
+Sortimentet och priserna ändras på **två** ställen, som måste stämma med varandra:
 `PRODUKTER` högst upp i [`app.js`](app.js) och `PRODUKTER` i
-[`apps-script/Code.gs`](apps-script/Code.gs).
+[`apps-script/Code.gs`](apps-script/Code.gs). Samma `id`, samma priser — annars blir
+summorna i Sheetet fel.
+
+Varje vara har en egen ikon (se `IKONER` längst ner i `app.js`). Ikonerna är egna
+SVG:er, inte emoji — Unicode har ingen röd lök, så gul och röd lök skulle annars sett
+exakt likadana ut.
 
 ## Sätt upp (ca 20 minuter)
 
 ### 1. Skapa Google Sheetet
-Gå till [sheets.new](https://sheets.new), döp det till t.ex. "Potatis klass 4A".
+Gå till [sheets.new](https://sheets.new), döp det till t.ex. "Potatis klass 4".
 Kopiera ID:t ur adressfältet — den långa biten mellan `/d/` och `/edit`.
 
 ### 2. Lägg in scriptet
@@ -64,13 +74,13 @@ Tryck **Deploy** och kopiera **Web app-URL:en** (den slutar på `/exec`).
 ```js
 const SCRIPT_URL   = 'https://script.google.com/.../exec';  // från steg 3
 const SWISH_NUMMER = '123 456 78 90';
-const SISTA_DAG    = 'söndag 5 oktober';
+const SISTA_DAG    = 'söndag 18 oktober';
 const MAL_KR       = 5000;   // null om ni inte vill visa någon progressbar
 ```
 
 ### 5. Publicera sidan
 ```bash
-git init && git add -A && git commit -m "Potatisförsäljning klass 4A"
+git init && git add -A && git commit -m "Potatisförsäljning klass 4"
 ```
 Skapa ett repo på GitHub, pusha, och slå sedan på Pages:
 **Settings → Pages → Source: Deploy from a branch → `main` / `/ (root)`**.
@@ -100,6 +110,6 @@ summeringen och tack-pop-upen fungerar — bra för att testa utseendet.
 |---|---|
 | `index.html` | Sidans struktur |
 | `style.css` | Utseende, mobilförst |
-| `app.js` | Priser, summering, skickande, konfetti |
+| `app.js` | Priser, ikoner, summering, skickande, konfetti |
 | `apps-script/Code.gs` | Tar emot beställningar, skriver till Sheetet |
 | `SHEET-SETUP.md` | Sammanställningsfliken och delning |
