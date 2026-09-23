@@ -31,6 +31,8 @@ de andra klassföräldrarna.
   rad du tittar på även när du scrollar åt höger.
 - Antalskolumnerna är smala och centrerade, och **nollor visas som tomt** — då ser
   du på en blick vad någon faktiskt beställt i stället för sju nollor per rad.
+  Beloppskolumnerna visar däremot alltid en siffra, även `0 kr`, så en tom cell
+  aldrig kan förväxlas med ett fel.
 - Summa och Vinst visas som `465 kr`, med Summa i fetstil.
 - **Betalda rader tonas gröna.** Kryssa i `Betald` så byter hela raden färg, och det
   som återstår syns direkt.

@@ -15,6 +15,11 @@ var SHEET_ID = '1SSqP5TsYxc8MV5sQAlrVAeHu73TmT11c-H-xCm517n4';
 var FLIK = 'Beställningar';
 var SAMMANSTALLNING = 'Sammanställning';
 
+// Talformat. KRONOR visar "0 kr" för nollor; ANTAL göms helt vid noll, så
+// beställningsraderna inte blir en vägg av nollor.
+var KRONOR = '# ##0 "kr";-# ##0 "kr";0 "kr"';
+var ANTAL = '0;-0;';
+
 // Bekräftelsemejl till köparen. Sätt till false för att stänga av helt.
 var SKICKA_BEKRAFTELSE = true;
 
@@ -127,7 +132,7 @@ function skapaSammanstallning() {
   for (var k = 3; k <= 5; k++) s.setColumnWidth(k, 130);
 
   s.getRange(2, 2, PRODUKTER.length + 1, 1).setHorizontalAlignment('center');
-  s.getRange(2, 3, PRODUKTER.length + 1, 3).setNumberFormat('# ##0 "kr";-# ##0 "kr";');
+  s.getRange(2, 3, PRODUKTER.length + 1, 3).setNumberFormat(KRONOR);
   s.getRange(totalrad, 1, 1, 5)
     .setFontWeight('bold')
     .setBackground('#f0e9dc')
@@ -137,7 +142,7 @@ function skapaSammanstallning() {
   s.getRange(totalrad, 5).setFontColor('#4f6b3a').setFontSize(13);
 
   s.getRange(uppfoljning, 1, 4, 1).setFontWeight('bold');
-  s.getRange(uppfoljning + 2, 2).setNumberFormat('# ##0 "kr";-# ##0 "kr";');
+  s.getRange(uppfoljning + 2, 2).setNumberFormat(KRONOR);
 }
 
 /**
@@ -184,10 +189,10 @@ function formatera(s) {
   // vad någon faktiskt beställt i stället för ett fält med sex nollor.
   s.getRange(2, forstaVara, rader, PRODUKTER.length)
     .setHorizontalAlignment('center')
-    .setNumberFormat('0;-0;');
+    .setNumberFormat(ANTAL);
 
   // Belopp med kr och tusenavgränsare.
-  s.getRange(2, kolSumma, rader, 2).setNumberFormat('# ##0 "kr";-# ##0 "kr";');
+  s.getRange(2, kolSumma, rader, 2).setNumberFormat(KRONOR);
   s.getRange(2, kolSumma, rader, 1).setFontWeight('bold');
 
   s.getRange(2, kolAnteckning, rader, 1).setWrap(true);
