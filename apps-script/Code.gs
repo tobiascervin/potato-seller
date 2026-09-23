@@ -48,8 +48,87 @@ var PRODUKTER = [
 function installera() {
   var s = blad();
   s.getRange(1, 1, 1, rubriker().length).setValues([rubriker()]);
+  formatera(s);
+  Logger.log('Klart. Fliken "%s" har rubriker och formatering på plats.', FLIK);
+}
+
+/**
+ * Gör Sheetet läsbart för mänskliga ögon. Körs av installera() och går att köra
+ * om hur många gånger som helst — den rör bara utseendet, aldrig innehållet.
+ */
+function formatera(s) {
+  var kolumner = rubriker().length;          // 16
+  var rader = 1000;                          // formatera i förväg, växer med listan
+  var forstaVara = 5;                        // kolumn E
+  var sistaVara = 4 + PRODUKTER.length;      // kolumn K med sju varor
+  var kolSumma = KOL_SUMMA + 1;              // L
+  var kolBetald = kolumner - 2;              // N
+  var kolAnteckning = kolumner;              // P
+
+  // Rubrikraden: grön med vit text, låst så den följer med när man scrollar.
+  s.getRange(1, 1, 1, kolumner)
+    .setBackground('#4f6b3a')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setVerticalAlignment('middle')
+    .setWrap(true);
+  s.setRowHeight(1, 42);
   s.setFrozenRows(1);
-  Logger.log('Klart. Fliken "%s" har rubrikerna på plats.', FLIK);
+  s.setFrozenColumns(2);                     // Tidpunkt + Namn syns alltid
+
+  // Kolumnbredder — smala antalskolumner, breda textkolumner.
+  s.setColumnWidth(1, 135);                  // Tidpunkt
+  s.setColumnWidth(2, 170);                  // Namn
+  s.setColumnWidth(3, 115);                  // Telefon
+  s.setColumnWidth(4, 200);                  // E-post
+  for (var k = forstaVara; k <= sistaVara; k++) s.setColumnWidth(k, 62);
+  s.setColumnWidth(kolSumma, 85);
+  s.setColumnWidth(kolSumma + 1, 85);
+  s.setColumnWidth(kolBetald, 70);
+  s.setColumnWidth(kolBetald + 1, 80);
+  s.setColumnWidth(kolAnteckning, 220);
+
+  // Datum utan sekunder, och telefon som text så inledande nolla inte försvinner.
+  s.getRange(2, 1, rader, 1).setNumberFormat('yyyy-mm-dd HH:mm');
+  s.getRange(2, 3, rader, 1).setNumberFormat('@');
+
+  // Antalskolumnerna: centrerade, och nollor visas som tomt. Då ser man direkt
+  // vad någon faktiskt beställt i stället för ett fält med sex nollor.
+  s.getRange(2, forstaVara, rader, PRODUKTER.length)
+    .setHorizontalAlignment('center')
+    .setNumberFormat('0;-0;');
+
+  // Belopp med kr och tusenavgränsare.
+  s.getRange(2, kolSumma, rader, 2).setNumberFormat('# ##0 "kr";-# ##0 "kr";');
+  s.getRange(2, kolSumma, rader, 1).setFontWeight('bold');
+
+  s.getRange(2, kolAnteckning, rader, 1).setWrap(true);
+
+  // Betalda rader tonas gröna, så man ser på en halv sekund vad som återstår.
+  var regel = SpreadsheetApp.newConditionalFormatRule()
+    .whenFormulaSatisfied('=$' + kolumnBokstav(kolBetald) + '2=TRUE')
+    .setBackground('#eaf3e3')
+    .setRanges([s.getRange(2, 1, rader, kolumner)])
+    .build();
+  s.setConditionalFormatRules([regel]);
+
+  // Kryssrutor på de rader som redan finns. Nya rader får sina i doPost —
+  // annars skulle tusen tomma kryssrutor räknas som obetalda beställningar.
+  var befintliga = s.getLastRow() - 1;
+  if (befintliga > 0) s.getRange(2, kolBetald, befintliga, 2).insertCheckboxes();
+
+  s.getRange(1, 1, rader + 1, kolumner).setVerticalAlignment('middle');
+}
+
+/* 1 → A, 14 → N. */
+function kolumnBokstav(n) {
+  var bokstav = '';
+  while (n > 0) {
+    var rest = (n - 1) % 26;
+    bokstav = String.fromCharCode(65 + rest) + bokstav;
+    n = Math.floor((n - 1) / 26);
+  }
+  return bokstav;
 }
 
 /* ---- Härifrån och ner: rör inte ---- */
@@ -94,7 +173,10 @@ function doPost(e) {
       .concat(antal)
       .concat([summa, vinst, '', '', '']);
 
-    blad().appendRow(rad);
+    var s = blad();
+    s.appendRow(rad);
+    // Kryssrutor för Betald och Utlämnad på just den här raden.
+    s.getRange(s.getLastRow(), rubriker().length - 2, 1, 2).insertCheckboxes();
 
     // Egen try/catch: ett trasigt mejl får aldrig se ut som en misslyckad
     // beställning. Raden ligger redan i Sheetet när vi kommer hit.

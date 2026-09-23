@@ -25,7 +25,18 @@ de andra klassföräldrarna.
 | O | **Utlämnad** | ni, manuellt |
 | P | **Anteckning** | ni, manuellt |
 
-N och O är kryssrutor: markera kolumnerna och välj **Infoga → Kryssruta**.
+`installera` sköter formateringen åt dig:
+
+- Grön låst rubrikrad, och kolumnerna Tidpunkt + Namn låsta i sidled så du ser vems
+  rad du tittar på även när du scrollar åt höger.
+- Antalskolumnerna är smala och centrerade, och **nollor visas som tomt** — då ser
+  du på en blick vad någon faktiskt beställt i stället för sju nollor per rad.
+- Summa och Vinst visas som `465 kr`, med Summa i fetstil.
+- **Betalda rader tonas gröna.** Kryssa i `Betald` så byter hela raden färg, och det
+  som återstår syns direkt.
+- Kryssrutor i `Betald` och `Utlämnad` läggs till automatiskt på varje ny beställning.
+
+Kör om `installera` när du vill — den rör bara utseendet, aldrig innehållet.
 
 ## Lägg upp `Sammanställning`
 
