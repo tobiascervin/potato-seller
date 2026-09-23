@@ -45,7 +45,7 @@ const PRODUKTER = [
 ];
 
 /* Klistra in /exec-URL:en från Apps Script här (se README.md steg 3). */
-const SCRIPT_URL = '';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqkNIYRRGe3qKPF_RueK5S_zH8RuG7ylvQIFEB7epNe9AgXLQHqxjWX_5eV3xJpbbO/exec';
 
 /* Sista beställningsdag — ren text, skriv som du vill. */
 const SISTA_DAG = 'söndag 18 oktober';
