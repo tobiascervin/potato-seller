@@ -10,7 +10,7 @@
 /* ---- ÄNDRA HÄR ---- */
 
 // ID:t ur Sheet-URL:en: docs.google.com/spreadsheets/d/<DET HÄR>/edit
-var SHEET_ID = 'KLISTRA_IN_SHEET_ID_HÄR';
+var SHEET_ID = '1SSqP5TsYxc8MV5sQAlrVAeHu73TmT11c-H-xCm517n4';
 
 var FLIK = 'Beställningar';
 
@@ -21,8 +21,9 @@ var SKICKA_BEKRAFTELSE = true;
 // som publicerat scriptet — det går inte att ändra i Apps Script.
 var AVSANDARNAMN = 'Klass 4, Rocknebyskolan';
 
-// Text i mejlet om utlämningen. Uppdatera när plats och tid är bestämda.
-var UTLAMNING = 'Vi hör av oss när varorna är här och berättar var och när de kan hämtas.';
+// Text i mejlet om utlämningen.
+var UTLAMNING = 'När beställningen stänger den 18 oktober mejlar vi ut tid och plats '
+  + 'för utlämningen till alla som beställt.';
 
 // Måste matcha PRODUKTER i app.js — samma id, samma priser.
 var PRODUKTER = [

@@ -40,15 +40,16 @@ exakt likadana ut.
 
 ## Sätt upp (ca 20 minuter)
 
-### 1. Skapa Google Sheetet
-Gå till [sheets.new](https://sheets.new), döp det till t.ex. "Potatis klass 4".
-Kopiera ID:t ur adressfältet — den långa biten mellan `/d/` och `/edit`.
+### 1. Google Sheetet
+Redan skapat, och ID:t är inlagt i `SHEET_ID` i
+[`apps-script/Code.gs`](apps-script/Code.gs). Byter ni Sheet är det ID:t ur adressfältet
+— den långa biten mellan `/d/` och `/edit` — som ska in där.
 
 ### 2. Lägg in scriptet
 I Sheetet: **Tillägg → Apps Script**. Radera det som ligger där och klistra in hela
 innehållet i [`apps-script/Code.gs`](apps-script/Code.gs).
 
-Byt ut `SHEET_ID` högst upp mot ditt ID. Spara.
+Spara.
 
 Välj funktionen **`installera`** i listan och tryck **Kör**. Godkänn behörigheterna när
 Google frågar (den vill komma åt ditt eget Sheet — det är förväntat). Nu finns fliken
