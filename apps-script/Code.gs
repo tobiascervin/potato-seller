@@ -36,6 +36,22 @@ var PRODUKTER = [
   { id: 'morotter',   namn: 'Morötter 5 kg',     inkop: 40, pris: 75  }
 ];
 
+/**
+ * KÖR DEN HÄR FÖRST.
+ *
+ * Lägger rubrikraden i fliken "Beställningar" med rätt kolumner. Kör om den
+ * varje gång sortimentet i PRODUKTER ändras, annars hamnar siffrorna fel.
+ *
+ * Den ligger överst i filen för att Apps Script förväljer den första
+ * funktionen i Kör-rullgardinen. Spara filen (Cmd+S) om den inte syns i listan.
+ */
+function installera() {
+  var s = blad();
+  s.getRange(1, 1, 1, rubriker().length).setValues([rubriker()]);
+  s.setFrozenRows(1);
+  Logger.log('Klart. Fliken "%s" har rubrikerna på plats.', FLIK);
+}
+
 /* ---- Härifrån och ner: rör inte ---- */
 
 var KOL_SUMMA = 4 + PRODUKTER.length;      // 0-indexerad kolumn för "Summa kr"
@@ -213,15 +229,4 @@ function svara(obj, callback) {
   return ContentService
     .createTextOutput(json)
     .setMimeType(ContentService.MimeType.JSON);
-}
-
-/**
- * Kör den här en gång från Apps Script-editorn för att lägga rubrikraden
- * med rätt kolumner. Välj funktionen "installera" och tryck Kör.
- */
-function installera() {
-  var s = blad();
-  s.getRange(1, 1, 1, rubriker().length).setValues([rubriker()]);
-  s.setFrozenRows(1);
-  Logger.log('Klart. Fliken "%s" har rubrikerna på plats.', FLIK);
 }

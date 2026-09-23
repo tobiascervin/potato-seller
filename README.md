@@ -53,7 +53,9 @@ innehållet i [`apps-script/Code.gs`](apps-script/Code.gs).
 
 Spara.
 
-Välj funktionen **`installera`** i listan och tryck **Kör**. Godkänn behörigheterna när
+Spara filen (**Cmd+S**) — funktionslistan uppdateras först då. Kontrollera att
+**`installera`** står i rullgardinen bredvid ▶ Kör (den ligger överst i filen och är
+förvald) och tryck **Kör**. Godkänn behörigheterna när
 Google frågar (den vill komma åt ditt eget Sheet — det är förväntat). Nu finns fliken
 `Beställningar` med rubrikraden.
 
