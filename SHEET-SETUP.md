@@ -55,10 +55,15 @@ från `PRODUKTER` i scriptet, så den speglar alltid sortimentet.
 Längst ner: antal beställningar, obetalda beställningar, obetalt belopp och hur många
 som inte hämtat ut ännu.
 
-Formlerna är skrivna så att de fungerar oavsett Sheetets språk. Svenska Sheets vill ha
-`;` mellan argument och engelska vill ha `,`, och Apps Script översätter inte — därför
-använder de genererade formlerna aldrig flera argument. `SUMPRODUCT` med `*` gör samma
-jobb, och `0`/`1` i stället för `FALSE`/`TRUE` som heter `FALSKT`/`SANT` på svenska.
+Formlerna är skrivna för att undvika två fällor:
+
+- **Argumentavgränsare.** Svenska Sheets vill ha `;` och engelska `,`, och Apps Script
+  översätter inte. Därför tar alla genererade formler bara ett argument —
+  `SUMPRODUCT` med `*` gör samma jobb som `COUNTIFS`.
+- **Kryssrutor.** `FALSE`/`TRUE` heter `FALSKT`/`SANT` på svenska, men att jämföra mot
+  `0` och `1` fungerar inte heller: Sheets rankar tal under booleaner, så `N2=0` blir
+  falskt även för en urkryssad ruta. I aritmetik konverteras de däremot, så formlerna
+  räknar `1-N2` i stället för att jämföra.
 
 > **Fliken är helt genererad.** Kör du om `installera` skrivs den över. Skriv därför
 > inga egna noteringar där — de hör hemma i kolumnen `Anteckning` på beställningsraden.
