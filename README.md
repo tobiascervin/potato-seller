@@ -95,8 +95,8 @@ Skapa ett repo på GitHub, pusha, och slå sedan på Pages:
 Sidan ligger på `https://<ditt-användarnamn>.github.io/<repo>/` efter en minut.
 
 ### 6. Dela med de andra klassföräldrarna
-Se [`SHEET-SETUP.md`](SHEET-SETUP.md) — lägg upp sammanställningsfliken och dela
-Sheetet som *Redigerare* så att alla kan bocka av betalt och utlämnat.
+Dela Sheetet som *Redigerare* så att alla kan bocka av betalt och utlämnat. Se
+[`SHEET-SETUP.md`](SHEET-SETUP.md) för vad kolumnerna betyder.
 
 ### 7. Städa upp efteråt
 Radera GitHub-repot och Google Sheetet. Ta också bort deploymenten i Apps Script

@@ -13,6 +13,7 @@
 var SHEET_ID = '1SSqP5TsYxc8MV5sQAlrVAeHu73TmT11c-H-xCm517n4';
 
 var FLIK = 'Beställningar';
+var SAMMANSTALLNING = 'Sammanställning';
 
 // Bekräftelsemejl till köparen. Sätt till false för att stänga av helt.
 var SKICKA_BEKRAFTELSE = true;
@@ -49,7 +50,84 @@ function installera() {
   var s = blad();
   s.getRange(1, 1, 1, rubriker().length).setValues([rubriker()]);
   formatera(s);
-  Logger.log('Klart. Fliken "%s" har rubriker och formatering på plats.', FLIK);
+  skapaSammanstallning();
+  Logger.log('Klart. Fliken "%s" och Sammanställningen är på plats.', FLIK);
+}
+
+/**
+ * Bygger om fliken "Sammanställning" från PRODUKTER, så den alltid speglar
+ * sortimentet. Fliken är helt genererad — allt du själv skriver in i den
+ * försvinner nästa gång installera körs. Egna anteckningar hör hemma i
+ * kolumnen Anteckning på beställningsraden.
+ */
+function skapaSammanstallning() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var s = ss.getSheetByName(SAMMANSTALLNING);
+  if (!s) {
+    s = ss.insertSheet(SAMMANSTALLNING, 0);
+  }
+  s.clear();
+  s.clearConditionalFormatRules();
+
+  var kolBetald = kolumnBokstav(rubriker().length - 2);     // N
+  var kolUtlamnad = kolumnBokstav(rubriker().length - 1);   // O
+  var kolSumma = kolumnBokstav(KOL_SUMMA + 1);              // L
+  var bl = "'" + FLIK + "'!";
+
+  var rutnat = [['Vara', 'Antal sålda', 'Till oss', 'Till Niklas', 'Till klasskassan']];
+
+  PRODUKTER.forEach(function (p, i) {
+    var kol = kolumnBokstav(5 + i);
+    var r = i + 2;
+    rutnat.push([
+      p.namn,
+      '=SUM(' + bl + kol + '2:' + kol + ')',
+      '=B' + r + '*' + p.pris,
+      '=B' + r + '*' + p.inkop,
+      '=C' + r + '-D' + r
+    ]);
+  });
+
+  var totalrad = PRODUKTER.length + 2;
+  rutnat.push([
+    'TOTALT',
+    '=SUM(B2:B' + (totalrad - 1) + ')',
+    '=SUM(C2:C' + (totalrad - 1) + ')',
+    '=SUM(D2:D' + (totalrad - 1) + ')',
+    '=SUM(E2:E' + (totalrad - 1) + ')'
+  ]);
+
+  s.getRange(1, 1, rutnat.length, 5).setValues(rutnat);
+
+  var uppfoljning = totalrad + 2;
+  s.getRange(uppfoljning, 1, 4, 2).setValues([
+    ['Antal beställningar', '=COUNTA(' + bl + 'B2:B)'],
+    ['Obetalda beställningar', '=COUNTIF(' + bl + kolBetald + '2:' + kolBetald + ',FALSE)'],
+    ['Obetalt belopp', '=SUMIF(' + bl + kolBetald + '2:' + kolBetald + ',FALSE,'
+      + bl + kolSumma + '2:' + kolSumma + ')'],
+    ['Inte utlämnade', '=COUNTIF(' + bl + kolUtlamnad + '2:' + kolUtlamnad + ',FALSE)']
+  ]);
+
+  // Utseende
+  s.getRange(1, 1, 1, 5)
+    .setBackground('#4f6b3a').setFontColor('#ffffff').setFontWeight('bold');
+  s.setFrozenRows(1);
+  s.setColumnWidth(1, 190);
+  s.setColumnWidth(2, 110);
+  for (var k = 3; k <= 5; k++) s.setColumnWidth(k, 130);
+
+  s.getRange(2, 2, PRODUKTER.length + 1, 1).setHorizontalAlignment('center');
+  s.getRange(2, 3, PRODUKTER.length + 1, 3).setNumberFormat('# ##0 "kr";-# ##0 "kr";');
+  s.getRange(totalrad, 1, 1, 5)
+    .setFontWeight('bold')
+    .setBackground('#f0e9dc')
+    .setBorder(true, null, null, null, null, null);
+
+  // Klasskassan är hela poängen — gör den grön och stor.
+  s.getRange(totalrad, 5).setFontColor('#4f6b3a').setFontSize(13);
+
+  s.getRange(uppfoljning, 1, 4, 1).setFontWeight('bold');
+  s.getRange(uppfoljning + 2, 2).setNumberFormat('# ##0 "kr";-# ##0 "kr";');
 }
 
 /**
