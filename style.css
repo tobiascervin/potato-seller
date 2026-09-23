@@ -127,10 +127,7 @@ main, .hero, .footer { max-width: 560px; margin: 0 auto; }
 .varor { margin: 0; padding: 0; list-style: none; }
 
 .vara {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
+  padding: 15px 16px;
   background: var(--papper);
   border: 1px solid var(--kant);
   border-radius: var(--rad);
@@ -140,6 +137,17 @@ main, .hero, .footer { max-width: 560px; margin: 0 auto; }
 
 .vara--vald { border-color: var(--potatis); box-shadow: 0 0 0 1px var(--potatis); }
 
+.vara__topp { display: flex; align-items: flex-start; gap: 13px; }
+
+.vara__botten {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  padding-left: 47px;   /* linjerar med texten ovanför */
+}
+
 .vara__ikon { flex: 0 0 auto; }
 
 .vara__ikon svg { display: block; width: 34px; height: 34px; }
@@ -148,19 +156,21 @@ main, .hero, .footer { max-width: 560px; margin: 0 auto; }
 
 .vara__namn { display: block; font-weight: 700; }
 
-.vara__meta {
+.vara__beskrivning {
   display: block;
+  margin: 2px 0 0;
   font-size: 13.5px;
+  line-height: 1.4;
   color: var(--jord-ljus);
 }
 
-.vara__belopp {
+.vara__meta {
   display: block;
-  margin-top: 1px;
   font-size: 14px;
-  font-weight: 700;
-  color: var(--potatis);
+  color: var(--jord-ljus);
 }
+
+.vara__meta strong { color: var(--potatis); }
 
 .antal { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
 

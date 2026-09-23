@@ -28,8 +28,9 @@ var UTLAMNING = 'När beställningen stänger den 18 oktober mejlar vi ut tid oc
 // Måste matcha PRODUKTER i app.js — samma id, samma priser.
 var PRODUKTER = [
   { id: 'kingedward', namn: 'King Edward 10 kg', inkop: 75, pris: 130 },
-  { id: 'inova',      namn: 'Inova 10 kg',       inkop: 75, pris: 130 },
   { id: 'bintje',     namn: 'Bintje 10 kg',      inkop: 75, pris: 130 },
+  { id: 'asterix',    namn: 'Asterix 10 kg',     inkop: 75, pris: 130 },
+  { id: 'inova',      namn: 'Inova 10 kg',       inkop: 75, pris: 130 },
   { id: 'gullok',     namn: 'Gul lök 5 kg',      inkop: 40, pris: 75  },
   { id: 'rodlok',     namn: 'Röd lök 5 kg',      inkop: 40, pris: 75  },
   { id: 'morotter',   namn: 'Morötter 5 kg',     inkop: 40, pris: 75  }

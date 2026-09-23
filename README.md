@@ -18,13 +18,14 @@ ser ni vem som köpt vad, vad ni sålt för, och vad som blir kvar till klasskas
 
 ## Sortiment
 
-Potatisen finns i tre sorter, som köparen väljer mellan:
+Potatisen finns i fyra sorter, som köparen väljer mellan:
 
 | Vara | Inköp från Niklas | Vårt pris | Till klasskassan |
 |---|---|---|---|
 | King Edward 10 kg (mjölig) | 75 kr | 130 kr | 55 kr |
-| Inova 10 kg (fast) | 75 kr | 130 kr | 55 kr |
 | Bintje 10 kg (mellan-fast) | 75 kr | 130 kr | 55 kr |
+| Asterix 10 kg | 75 kr | 130 kr | 55 kr |
+| Inova 10 kg (fast) | 75 kr | 130 kr | 55 kr |
 | Gul lök 5 kg | 40 kr | 75 kr | 35 kr |
 | Röd lök 5 kg | 40 kr | 75 kr | 35 kr |
 | Morötter 5 kg | 40 kr | 75 kr | 35 kr |
@@ -34,7 +35,8 @@ Sortimentet och priserna ändras på **två** ställen, som måste stämma med v
 [`apps-script/Code.gs`](apps-script/Code.gs). Samma `id`, samma priser — annars blir
 summorna i Sheetet fel.
 
-Varje vara har en egen ikon (se `IKONER` längst ner i `app.js`). Ikonerna är egna
+Varje vara har en kort beskrivning (`text`) som hjälper köparen välja sort, och en egen
+ikon (se `IKONER` längre ner i `app.js`). Ikonerna är egna
 SVG:er, inte emoji — Unicode har ingen röd lök, så gul och röd lök skulle annars sett
 exakt likadana ut.
 

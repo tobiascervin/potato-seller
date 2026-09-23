@@ -4,14 +4,44 @@
 
 /* Produkterna. `inkop` = vad vi betalar Niklas, `pris` = vad kunden betalar.
    Skillnaden är vinsten till klasskassan och räknas ut automatiskt.
+   `text` är den korta beskrivningen som hjälper köparen välja sort.
    `ikon` pekar på en av ikonerna längre ner i filen. */
 const PRODUKTER = [
-  { id: 'kingedward', namn: 'King Edward', sort: 'mjölig',      enhet: '10 kg', inkop: 75, pris: 130, ikon: 'potatis' },
-  { id: 'inova',      namn: 'Inova',       sort: 'fast',        enhet: '10 kg', inkop: 75, pris: 130, ikon: 'potatis' },
-  { id: 'bintje',     namn: 'Bintje',      sort: 'mellan-fast', enhet: '10 kg', inkop: 75, pris: 130, ikon: 'potatis' },
-  { id: 'gullok',     namn: 'Gul lök',     sort: '',            enhet: '5 kg',  inkop: 40, pris: 75,  ikon: 'gullok'  },
-  { id: 'rodlok',     namn: 'Röd lök',     sort: '',            enhet: '5 kg',  inkop: 40, pris: 75,  ikon: 'rodlok'  },
-  { id: 'morotter',   namn: 'Morötter',    sort: '',            enhet: '5 kg',  inkop: 40, pris: 75,  ikon: 'morot'   },
+  {
+    id: 'kingedward', namn: 'King Edward', enhet: '10 kg',
+    text: 'Klassikern. Mjölig och smakrik — bäst till mos, bakpotatis och gratäng.',
+    inkop: 75, pris: 130, ikon: 'potatis',
+  },
+  {
+    id: 'bintje', namn: 'Bintje', enhet: '10 kg',
+    text: 'Allroundaren. Mellanfast och funkar till det mesta — kokt, stekt och pommes.',
+    inkop: 75, pris: 130, ikon: 'potatis',
+  },
+  {
+    id: 'asterix', namn: 'Asterix', enhet: '10 kg',
+    text: 'Rödskalig med gult kött. Fin till klyftpotatis, gratäng och ugnsstekt.',
+    inkop: 75, pris: 130, ikon: 'potatis',
+  },
+  {
+    id: 'inova', namn: 'Inova', enhet: '10 kg',
+    text: 'Fast och lättskalad. Perfekt som kokt potatis och till potatissallad.',
+    inkop: 75, pris: 130, ikon: 'potatis',
+  },
+  {
+    id: 'gullok', namn: 'Gul lök', enhet: '5 kg',
+    text: 'Vardagslöken. Till grytor, soppor och allt som börjar i stekpannan.',
+    inkop: 40, pris: 75, ikon: 'gullok',
+  },
+  {
+    id: 'rodlok', namn: 'Röd lök', enhet: '5 kg',
+    text: 'Mildare och sötare än gul. Fin rå i sallad och till grillat.',
+    inkop: 40, pris: 75, ikon: 'rodlok',
+  },
+  {
+    id: 'morotter', namn: 'Morötter', enhet: '5 kg',
+    text: 'Söta höstmorötter. Lika bra i grytan som råa direkt ur påsen.',
+    inkop: 40, pris: 75, ikon: 'morot',
+  },
 ];
 
 /* Klistra in /exec-URL:en från Apps Script här (se README.md steg 3). */
@@ -102,22 +132,25 @@ PRODUKTER.forEach(p => {
   const li = document.createElement('li');
   li.className = 'vara';
   li.dataset.id = p.id;
-  const sort = p.sort ? ` · ${p.sort}` : '';
   li.innerHTML = `
-    <span class="vara__ikon">${IKONER[p.ikon]}</span>
-    <span class="vara__text">
-      <span class="vara__namn">${p.namn}</span>
-      <span class="vara__meta">${p.enhet}${sort}</span>
-      <span class="vara__belopp">${kr(p.pris)} kr</span>
-    </span>
-    <span class="antal">
-      <button type="button" class="antal__knapp" data-steg="-1"
-              aria-label="Minska antal ${p.namn}" disabled>−</button>
-      <span class="antal__varde" aria-live="polite"
-            aria-label="Antal ${p.namn}">0</span>
-      <button type="button" class="antal__knapp" data-steg="1"
-              aria-label="Öka antal ${p.namn}">+</button>
-    </span>`;
+    <div class="vara__topp">
+      <span class="vara__ikon">${IKONER[p.ikon]}</span>
+      <span class="vara__text">
+        <span class="vara__namn">${p.namn}</span>
+        <span class="vara__beskrivning">${p.text}</span>
+      </span>
+    </div>
+    <div class="vara__botten">
+      <span class="vara__meta">${p.enhet} — <strong>${kr(p.pris)} kr</strong></span>
+      <span class="antal">
+        <button type="button" class="antal__knapp" data-steg="-1"
+                aria-label="Minska antal ${p.namn}" disabled>−</button>
+        <span class="antal__varde" aria-live="polite"
+              aria-label="Antal ${p.namn}">0</span>
+        <button type="button" class="antal__knapp" data-steg="1"
+                aria-label="Öka antal ${p.namn}">+</button>
+      </span>
+    </div>`;
   varorEl.appendChild(li);
 });
 
