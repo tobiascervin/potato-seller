@@ -99,13 +99,23 @@ function skapaSammanstallning() {
 
   s.getRange(1, 1, rutnat.length, 5).setValues(rutnat);
 
+  // Två språkfällor undviks här:
+  //   1. FALSE/TRUE heter FALSKT/SANT på svenska — vi jämför mot 0 och 1 i stället.
+  //   2. Svenska Sheets separerar argument med ; och engelska med , och Apps Script
+  //      översätter inte. SUMPRODUCT med * i stället för flera argument slipper
+  //      problemet helt. Alla formler här är därför enargumentsformler.
+  var SIST = 1000;
+  var harNamn = '(' + bl + 'B2:B' + SIST + '<>"")';
+  var obetald = '(' + bl + kolBetald + '2:' + kolBetald + SIST + '=0)';
+  var ejUtlamnad = '(' + bl + kolUtlamnad + '2:' + kolUtlamnad + SIST + '=0)';
+
   var uppfoljning = totalrad + 2;
   s.getRange(uppfoljning, 1, 4, 2).setValues([
     ['Antal beställningar', '=COUNTA(' + bl + 'B2:B)'],
-    ['Obetalda beställningar', '=COUNTIF(' + bl + kolBetald + '2:' + kolBetald + ',FALSE)'],
-    ['Obetalt belopp', '=SUMIF(' + bl + kolBetald + '2:' + kolBetald + ',FALSE,'
-      + bl + kolSumma + '2:' + kolSumma + ')'],
-    ['Inte utlämnade', '=COUNTIF(' + bl + kolUtlamnad + '2:' + kolUtlamnad + ',FALSE)']
+    ['Obetalda beställningar', '=SUMPRODUCT(' + harNamn + '*' + obetald + ')'],
+    ['Obetalt belopp', '=SUMPRODUCT(' + harNamn + '*' + obetald + '*'
+      + bl + kolSumma + '2:' + kolSumma + SIST + ')'],
+    ['Inte utlämnade', '=SUMPRODUCT(' + harNamn + '*' + ejUtlamnad + ')']
   ]);
 
   // Utseende
@@ -184,7 +194,7 @@ function formatera(s) {
 
   // Betalda rader tonas gröna, så man ser på en halv sekund vad som återstår.
   var regel = SpreadsheetApp.newConditionalFormatRule()
-    .whenFormulaSatisfied('=$' + kolumnBokstav(kolBetald) + '2=TRUE')
+    .whenFormulaSatisfied('=$' + kolumnBokstav(kolBetald) + '2=1')
     .setBackground('#eaf3e3')
     .setRanges([s.getRange(2, 1, rader, kolumner)])
     .build();

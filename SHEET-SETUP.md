@@ -53,6 +53,11 @@ från `PRODUKTER` i scriptet, så den speglar alltid sortimentet.
 Längst ner: antal beställningar, obetalda beställningar, obetalt belopp och hur många
 som inte hämtat ut ännu.
 
+Formlerna är skrivna så att de fungerar oavsett Sheetets språk. Svenska Sheets vill ha
+`;` mellan argument och engelska vill ha `,`, och Apps Script översätter inte — därför
+använder de genererade formlerna aldrig flera argument. `SUMPRODUCT` med `*` gör samma
+jobb, och `0`/`1` i stället för `FALSE`/`TRUE` som heter `FALSKT`/`SANT` på svenska.
+
 > **Fliken är helt genererad.** Kör du om `installera` skrivs den över. Skriv därför
 > inga egna noteringar där — de hör hemma i kolumnen `Anteckning` på beställningsraden.
 
