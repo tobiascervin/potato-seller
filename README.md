@@ -188,3 +188,24 @@ summeringen och tack-pop-upen fungerar — bra för att testa utseendet.
 | `app.js` | Priser, ikoner, summering, skickande, konfetti |
 | `apps-script/Code.gs` | Tar emot beställningar, skriver till Sheetet |
 | `SHEET-SETUP.md` | Sammanställningsfliken och delning |
+
+## Affischen
+
+[`affisch/affisch.pdf`](affisch/affisch.pdf) är A4, en sida, redo att skriva ut.
+QR-koden pekar på sidan och är verifierad — den avkodas ur den färdiga PDF:en.
+
+Ska något ändras, redigera konstanterna högst upp i
+[`affisch/generera-affisch.py`](affisch/generera-affisch.py) och kör:
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install segno
+.venv/bin/python affisch/generera-affisch.py
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless --disable-gpu --no-pdf-header-footer \
+  --print-to-pdf=affisch/affisch.pdf affisch/affisch.html
+```
+
+Två fällor som redan är lösta, rör dem inte utan att testa om QR-koden går att
+avkoda efteråt: QR:en behöver sin tysta zon (`border=4`), och SVG:en behöver
+`omitsize=True` så att den får en `viewBox` — utan den beskärs koden i stället
+för att skalas när CSS sätter storleken.

@@ -341,6 +341,11 @@ form.addEventListener('submit', async e => {
   e.preventDefault();
   felEl.hidden = true;
 
+  if (!SCRIPT_URL) {
+    return visaFel('Beställningsformuläret är inte igång än. Försök igen senare, '
+                 + 'eller hör av dig till en klassförälder.');
+  }
+
   if (valda().length === 0) return visaFel('Välj minst en vara innan du skickar.');
 
   const trasigt = granskaAlla();
@@ -381,10 +386,6 @@ form.addEventListener('submit', async e => {
 
 /* Returnerar nya gemensamma totalen, null om okänd, eller false vid fel. */
 async function skicka(data) {
-  if (!SCRIPT_URL) {
-    console.warn('SCRIPT_URL är tom — beställningen sparas inte. Se README.md.');
-    return null;
-  }
   try {
     // text/plain gör det till en "simple request" → ingen CORS-preflight.
     const r = await fetch(SCRIPT_URL, {

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>Affisch — potatisförsäljning klass 4</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+
+  * { box-sizing: border-box; }
+
+  body { margin: 0; }
+
+  /* Allt ligger i ett ark med fast höjd. overflow:hidden på <body> hindrar inte
+     Chromes sidbrytning — den måste sitta på ett inre element, annars hamnar
+     sista raden ensam på en sida 2. */
+  .ark {
+    width: 210mm;
+    height: 296mm;
+    overflow: hidden;
+    padding: 15mm 16mm 11mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: #fdf8f0;
+    color: #2b2118;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .eyebrow {
+    font-size: 15pt;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #6b5843;
+  }
+
+  h1 {
+    margin: 5mm 0 0;
+    font-size: 48pt;
+    line-height: .98;
+    letter-spacing: -.02em;
+  }
+
+  .odlare {
+    margin: 6mm 0 0;
+    font-size: 15pt;
+    line-height: 1.4;
+    color: #5a4634;
+  }
+
+  .priser {
+    display: flex;
+    gap: 6mm;
+    margin: 8mm 0 0;
+    width: 100%;
+  }
+
+  .pris {
+    flex: 1;
+    padding: 6mm 3mm;
+    background: #fff;
+    border: 1.5pt solid #e0d3bd;
+    border-radius: 4mm;
+  }
+
+  .pris__vara { font-size: 15pt; font-weight: 700; }
+  .pris__sorter { margin-top: 1.5mm; font-size: 11pt; color: #6b5843; }
+  .pris__belopp { margin-top: 3mm; font-size: 30pt; font-weight: 800; color: #b5812a; }
+
+  .qr-ruta {
+    margin: 7mm 0 0;
+    padding: 5mm;
+    background: #fff;
+    border: 1.5pt solid #e0d3bd;
+    border-radius: 5mm;
+  }
+
+  .qr-ruta svg { display: block; width: 57mm; height: 57mm; }
+
+  .skanna {
+    margin: 5mm 0 0;
+    font-size: 19pt;
+    font-weight: 700;
+  }
+
+  .adress {
+    margin: 2mm 0 0;
+    font-size: 12.5pt;
+    color: #6b5843;
+    word-break: break-all;
+  }
+
+  .deadline {
+    margin: 7mm 0 0;
+    padding: 4mm 9mm;
+    background: #4f6b3a;
+    color: #fff;
+    border-radius: 3mm;
+    font-size: 19pt;
+    font-weight: 700;
+  }
+
+  .fot {
+    margin-top: auto;
+    padding-top: 5mm;
+    font-size: 12.5pt;
+    line-height: 1.55;
+    color: #5a4634;
+  }
+
+  .fot strong { color: #2b2118; }
+</style>
+</head>
+<body>
+<div class="ark">
+
+  <p class="eyebrow">Klass 4 på Rocknebyskolan säljer</p>
+
+  <h1>Öländsk potatis<br>lök &amp; morötter</h1>
+
+  <p class="odlare">
+    Odlat av Niklas på <strong>Norrgårdens Grönsaker</strong><br>
+    i Ventlinge på Öland
+  </p>
+
+  <div class="priser">
+    <div class="pris">
+      <div class="pris__vara">Potatis, 10 kg</div>
+      <div class="pris__sorter">King Edward · Bintje · Asterix · Inova</div>
+      <div class="pris__belopp">130 kr</div>
+    </div>
+    <div class="pris">
+      <div class="pris__vara">Lök &amp; morötter, 5 kg</div>
+      <div class="pris__sorter">Gul lök · Röd lök · Morötter</div>
+      <div class="pris__belopp">75 kr</div>
+    </div>
+  </div>
+
+  <div class="qr-ruta"><svg viewBox="0 0 410 410" class="segno"><path transform="scale(10)" class="qrline" stroke="#2b2118" d="M4 4.5h7m2 0h3m1 0h8m1 0h2m2 0h7m-33 1h1m5 0h1m1 0h3m4 0h1m2 0h1m1 0h5m1 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m2 0h1m2 0h2m1 0h1m1 0h1m5 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m3 0h1m2 0h1m2 0h1m1 0h2m4 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m1 0h5m1 0h1m1 0h2m3 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m2 0h1m2 0h2m2 0h4m1 0h2m3 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-22 1h1m1 0h1m3 0h4m1 0h3m-24 1h3m1 0h2m3 0h2m2 0h1m1 0h4m1 0h1m8 0h2m-29 1h1m1 0h1m1 0h1m2 0h2m1 0h1m4 0h2m3 0h1m2 0h2m1 0h4m-31 1h6m2 0h3m1 0h1m2 0h1m2 0h1m1 0h4m1 0h3m1 0h2m-32 1h1m1 0h3m1 0h1m1 0h1m2 0h2m1 0h1m4 0h1m5 0h2m1 0h1m1 0h1m-31 1h2m1 0h1m1 0h1m5 0h5m1 0h3m1 0h2m1 0h1m1 0h3m2 0h1m-33 1h2m1 0h1m1 0h1m2 0h1m1 0h2m1 0h3m3 0h1m2 0h1m1 0h2m5 0h1m-31 1h2m2 0h3m4 0h4m3 0h4m1 0h1m1 0h2m1 0h1m-29 1h1m2 0h1m4 0h1m2 0h1m1 0h1m1 0h2m2 0h3m1 0h3m1 0h3m-27 1h3m1 0h1m3 0h2m1 0h1m1 0h1m2 0h4m1 0h2m1 0h3m-31 1h2m1 0h2m2 0h1m2 0h2m1 0h2m2 0h2m1 0h1m1 0h3m1 0h1m1 0h2m1 0h2m-33 1h1m5 0h3m1 0h3m2 0h1m4 0h1m3 0h1m2 0h2m1 0h2m-31 1h1m3 0h1m1 0h2m3 0h1m1 0h1m5 0h1m1 0h1m3 0h1m1 0h1m3 0h1m-32 1h4m1 0h3m1 0h1m1 0h5m1 0h1m2 0h1m7 0h2m-31 1h2m1 0h1m3 0h3m1 0h1m1 0h3m1 0h5m1 0h1m2 0h1m3 0h1m1 0h1m-31 1h6m1 0h1m2 0h2m2 0h1m1 0h1m1 0h1m1 0h2m1 0h3m1 0h4m-32 1h2m1 0h1m2 0h4m2 0h1m3 0h4m3 0h2m-26 1h1m1 0h8m2 0h2m2 0h4m2 0h1m1 0h5m2 0h2m-25 1h1m3 0h4m2 0h2m2 0h3m3 0h2m1 0h1m-32 1h7m3 0h1m1 0h1m2 0h2m2 0h1m3 0h2m1 0h1m1 0h1m-29 1h1m5 0h1m1 0h3m1 0h4m3 0h6m3 0h4m-32 1h1m1 0h3m1 0h1m2 0h1m1 0h2m1 0h5m1 0h9m1 0h1m-31 1h1m1 0h3m1 0h1m1 0h2m1 0h3m1 0h1m1 0h2m1 0h1m1 0h3m2 0h1m1 0h4m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h4m1 0h2m6 0h1m2 0h2m-28 1h1m5 0h1m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m5 0h2m1 0h2m3 0h1m-33 1h7m4 0h2m3 0h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1"/></svg></div>
+
+  <p class="skanna">Skanna med mobilkameran för att beställa</p>
+  <p class="adress">https://tobiascervin.github.io/potato-seller/</p>
+
+  <p class="deadline">Sista beställningsdag 18 oktober</p>
+
+  <p class="fot">
+    Hela förtjänsten går till klasskassan.<br>
+    Betalning med Swish vid utlämning — vi mejlar tid och plats när listan stängt.<br>
+    Frågor? Ring <strong>Tobias, 073-726 60 67</strong>
+  </p>
+
+</div>
+</body>
+</html>
