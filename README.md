@@ -40,6 +40,28 @@ ikon (se `IKONER` längre ner i `app.js`). Ikonerna är egna
 SVG:er, inte emoji — Unicode har ingen röd lök, så gul och röd lök skulle annars sett
 exakt likadana ut.
 
+## Svenskt Apps Script-gränssnitt
+
+Instruktionerna nedan använder de engelska menynamnen. Har du Google på svenska:
+
+| Engelska | Svenska |
+|---|---|
+| Extensions → Apps Script | Tillägg → Apps Script |
+| Run | Kör |
+| Save | Spara |
+| Executions | Körningar |
+| Deploy | **Implementera** (blå knapp uppe till höger) |
+| New deployment | Ny implementering |
+| Manage deployments | Hantera implementeringar |
+| Web app | Webbapp |
+| Execute as: Me | Kör som: Jag |
+| Who has access: Anyone | Vem har åtkomst: Alla |
+| Advanced → Go to … (unsafe) | Avancerat → fortsätt till projektet ändå |
+
+Översättningarna i undermenyerna kan variera. Gå efter strukturen: Implementera är
+alltid blå knappen uppe till höger, sedan väljer du typ via kugghjulet, sedan två
+rullgardiner innan du bekräftar.
+
 ## Sätt upp (ca 20 minuter)
 
 ### 1. Google Sheetet
