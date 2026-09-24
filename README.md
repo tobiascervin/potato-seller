@@ -154,6 +154,20 @@ Om utskicket misslyckas ligger beställningen ändå kvar i Sheetet — mejlet h
 felskydd och kan inte sänka beställningen. Misslyckade utskick loggas i Apps Script
 under **Executions**.
 
+## Dubbla beställningar
+
+Varje beställning får ett `ref` i webbläsaren som följer med till scriptet.
+`doPost` sparar det bland scriptets egenskaper och struntar i en beställning
+vars `ref` redan setts — den svarar med `dubblett: true` utan att skriva en rad
+eller skicka ett mejl.
+
+Det behövs för att klienten gör ett omtag när den inte kan läsa svaret. Utan
+`ref` blev det omtaget en andra rad och ett andra bekräftelsemejl, vilket
+hände skarpt en gång.
+
+Skydd mot att någon råkar beställa två gånger vid olika tillfällen finns inte,
+och är avsiktligt: två likadana beställningar kan vara helt äkta.
+
 ## Validering av kunduppgifter
 
 Formuläret släpper inte igenom en beställning förrän namn, telefon och e-post är

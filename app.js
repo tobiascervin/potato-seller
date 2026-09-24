@@ -361,6 +361,7 @@ form.addEventListener('submit', async e => {
   };
 
   const bestallning = {
+    ref: nyttRef(),
     namn: varde('namn'),
     telefon: varde('telefon'),
     epost: varde('epost'),
@@ -385,6 +386,13 @@ form.addEventListener('submit', async e => {
 });
 
 /* Returnerar nya gemensamma totalen, null om okänd, eller false vid fel. */
+/* Unikt id per beställning. Följer med båda sändningsförsöken nedan, så att
+   servern kan känna igen ett omtag och inte skapa en andra rad. */
+function nyttRef() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+}
+
 async function skicka(data) {
   try {
     // text/plain gör det till en "simple request" → ingen CORS-preflight.
@@ -396,7 +404,9 @@ async function skicka(data) {
     const svar = await r.json();
     return svar && svar.vinst != null ? Number(svar.vinst) : null;
   } catch (err) {
-    // Blockerar CORS svaret? Skicka blint — raden skrivs ändå i Sheetet.
+    // Kom vi hit kan beställningen mycket väl ha skrivits redan — felet kan
+    // lika gärna sitta i att läsa svaret som i att skicka. Vi gör ett omtag,
+    // men med samma `ref`, så servern skriver inte en andra rad.
     try {
       await fetch(SCRIPT_URL, {
         method: 'POST',

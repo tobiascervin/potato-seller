@@ -258,6 +258,13 @@ function doPost(e) {
     var data = JSON.parse(e.postData.contents);
     var varor = data.varor || {};
 
+    // Samma beställning två gånger? Klienten gör ett omtag om den inte kunde
+    // läsa svaret, och då kommer identisk data med samma ref. Utan den här
+    // kontrollen blir det två rader och två bekräftelsemejl.
+    if (data.ref && redanMottagen(data.ref)) {
+      return svara({ ok: true, dubblett: true, vinst: totalVinst() }, null);
+    }
+
     var summa = 0;
     var vinst = 0;
     var antal = PRODUKTER.map(function (p) {
@@ -275,6 +282,10 @@ function doPost(e) {
     s.appendRow(rad);
     // Kryssrutor för Betald och Utlämnad på just den här raden.
     s.getRange(s.getLastRow(), rubriker().length - 2, 1, 2).insertCheckboxes();
+
+    // Kvittera direkt efter appendRow. Skulle mejlet nedan hänga sig och
+    // klienten göra ett omtag, ska omtaget se raden som redan mottagen.
+    if (data.ref) kvittera(data.ref);
 
     // Egen try/catch: ett trasigt mejl får aldrig se ut som en misslyckad
     // beställning. Raden ligger redan i Sheetet när vi kommer hit.
@@ -318,6 +329,22 @@ function summeraKolumn(index) {
 
 function antalRader() {
   return Math.max(0, blad().getLastRow() - 1);
+}
+
+/**
+ * Har vi redan tagit emot beställningen med det här id:t?
+ *
+ * Id:na sparas bland scriptets egenskaper, inte i Sheetet, så att
+ * kolumnerna inte påverkas. De städas bort av att hela projektet raderas
+ * när försäljningen är över.
+ */
+function redanMottagen(ref) {
+  return PropertiesService.getScriptProperties().getProperty('ref:' + ref) !== null;
+}
+
+function kvittera(ref) {
+  PropertiesService.getScriptProperties()
+    .setProperty('ref:' + ref, String(new Date().getTime()));
 }
 
 /**
