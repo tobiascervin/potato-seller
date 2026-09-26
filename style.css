@@ -229,6 +229,14 @@ main, .hero, .footer { max-width: 560px; margin: 0 auto; }
 
 .falt .input--fel { border-color: var(--morot); background: #fffaf7; }
 
+.valfritt { font-weight: 400; color: var(--jord-ljus); }
+
+.falt__hjalp {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  color: var(--jord-ljus);
+}
+
 .falt__fel {
   margin: 6px 0 0;
   font-size: 13.5px;

@@ -31,6 +31,11 @@ var AVSANDARNAMN = 'Klass 4, Rocknebyskolan';
 var UTLAMNING = 'När beställningen stänger den 18 oktober mejlar vi ut tid och plats '
   + 'för utlämningen till alla som beställt.';
 
+// Kolumnerna före och efter varorna. Ordningen här är ordningen i Sheetet.
+var BARN = 'Barn i klassen';
+var FORE = ['Tidpunkt', 'Namn', BARN, 'Telefon', 'E-post'];
+var EFTER = ['Summa kr', 'Vinst kr', 'Betald', 'Utlämnad', 'Anteckning'];
+
 // Måste matcha PRODUKTER i app.js — samma id, samma priser.
 var PRODUKTER = [
   { id: 'kingedward', namn: 'King Edward 10 kg', inkop: 75, pris: 130 },
@@ -53,10 +58,31 @@ var PRODUKTER = [
  */
 function installera() {
   var s = blad();
+  if (migreraBarnkolumn(s)) {
+    Logger.log('Lade till kolumnen "%s" och flyttade befintliga rader åt höger.', BARN);
+  }
   s.getRange(1, 1, 1, rubriker().length).setValues([rubriker()]);
   formatera(s);
   skapaSammanstallning();
   Logger.log('Klart. Fliken "%s" och Sammanställningen är på plats.', FLIK);
+}
+
+/**
+ * Lägger in kolumnen för barn i ett Sheet som skapades innan den fanns.
+ *
+ * Skriver man bara nya rubriker hamnar gamla rader under fel kolumn —
+ * antalet King Edward skulle stå under "Barn i klassen". Därför en riktig
+ * kolumninsättning, som flyttar befintlig data åt höger. Gör ingenting om
+ * kolumnen redan finns, så installera kan köras hur många gånger som helst.
+ */
+function migreraBarnkolumn(s) {
+  var rubrikrad = lasRubriker(s);
+  if (rubrikrad.indexOf(BARN) !== -1) return false;
+  var namnKol = rubrikrad.indexOf('Namn') + 1;
+  if (namnKol < 1) return false;            // okänd layout — rör ingenting
+  s.insertColumnAfter(namnKol);
+  s.getRange(1, namnKol + 1).setValue(BARN);
+  return true;
 }
 
 /**
@@ -74,19 +100,20 @@ function skapaSammanstallning() {
   s.clear();
   s.clearConditionalFormatRules();
 
-  var kolBetald = kolumnBokstav(rubriker().length - 2);     // N
-  var kolUtlamnad = kolumnBokstav(rubriker().length - 1);   // O
-  var kolSumma = kolumnBokstav(KOL_SUMMA + 1);              // L
+  var kolBetald = kolumnBokstav(kol('Betald'));
+  var kolUtlamnad = kolumnBokstav(kol('Utlämnad'));
+  var kolSumma = kolumnBokstav(kol('Summa kr'));
+  var kolNamn = kolumnBokstav(kol('Namn'));
   var bl = "'" + FLIK + "'!";
 
   var rutnat = [['Vara', 'Antal sålda', 'Till oss', 'Till Niklas', 'Till klasskassan']];
 
   PRODUKTER.forEach(function (p, i) {
-    var kol = kolumnBokstav(5 + i);
+    var k = kolumnBokstav(kol(p.namn));
     var r = i + 2;
     rutnat.push([
       p.namn,
-      '=SUM(' + bl + kol + '2:' + kol + ')',
+      '=SUM(' + bl + k + '2:' + k + ')',
       '=B' + r + '*' + p.pris,
       '=B' + r + '*' + p.inkop,
       '=C' + r + '-D' + r
@@ -115,13 +142,13 @@ function skapaSammanstallning() {
   //      falskt även för en urkryssad ruta. I aritmetik konverteras de däremot,
   //      så 1-FALSKT ger 1 och 1-SANT ger 0. Därför subtraktion, inte jämförelse.
   var SIST = 1000;
-  var harNamn = '(' + bl + 'B2:B' + SIST + '<>"")';
+  var harNamn = '(' + bl + kolNamn + '2:' + kolNamn + SIST + '<>"")';
   var obetald = '(1-' + bl + kolBetald + '2:' + kolBetald + SIST + ')';
   var ejUtlamnad = '(1-' + bl + kolUtlamnad + '2:' + kolUtlamnad + SIST + ')';
 
   var uppfoljning = totalrad + 2;
   s.getRange(uppfoljning, 1, 4, 2).setValues([
-    ['Antal beställningar', '=COUNTA(' + bl + 'B2:B)'],
+    ['Antal beställningar', '=COUNTA(' + bl + kolNamn + '2:' + kolNamn + ')'],
     ['Obetalda beställningar', '=SUMPRODUCT(' + harNamn + '*' + obetald + ')'],
     ['Obetalt belopp', '=SUMPRODUCT(' + harNamn + '*' + obetald + '*'
       + bl + kolSumma + '2:' + kolSumma + SIST + ')'],
@@ -155,13 +182,13 @@ function skapaSammanstallning() {
  * om hur många gånger som helst — den rör bara utseendet, aldrig innehållet.
  */
 function formatera(s) {
-  var kolumner = rubriker().length;          // 16
+  var kolumner = rubriker().length;
   var rader = 1000;                          // formatera i förväg, växer med listan
-  var forstaVara = 5;                        // kolumn E
-  var sistaVara = 4 + PRODUKTER.length;      // kolumn K med sju varor
-  var kolSumma = KOL_SUMMA + 1;              // L
-  var kolBetald = kolumner - 2;              // N
-  var kolAnteckning = kolumner;              // P
+  var forstaVara = FORE.length + 1;
+  var sistaVara = FORE.length + PRODUKTER.length;
+  var kolSumma = kol('Summa kr');
+  var kolBetald = kol('Betald');
+  var kolAnteckning = kol('Anteckning');
 
   // Rubrikraden: grön med vit text, låst så den följer med när man scrollar.
   s.getRange(1, 1, 1, kolumner)
@@ -172,13 +199,14 @@ function formatera(s) {
     .setWrap(true);
   s.setRowHeight(1, 42);
   s.setFrozenRows(1);
-  s.setFrozenColumns(2);                     // Tidpunkt + Namn syns alltid
+  s.setFrozenColumns(3);                     // Tidpunkt, Namn och Barn syns alltid
 
   // Kolumnbredder — smala antalskolumner, breda textkolumner.
-  s.setColumnWidth(1, 135);                  // Tidpunkt
-  s.setColumnWidth(2, 170);                  // Namn
-  s.setColumnWidth(3, 115);                  // Telefon
-  s.setColumnWidth(4, 200);                  // E-post
+  s.setColumnWidth(kol('Tidpunkt'), 135);
+  s.setColumnWidth(kol('Namn'), 170);
+  s.setColumnWidth(kol(BARN), 120);
+  s.setColumnWidth(kol('Telefon'), 115);
+  s.setColumnWidth(kol('E-post'), 200);
   for (var k = forstaVara; k <= sistaVara; k++) s.setColumnWidth(k, 62);
   s.setColumnWidth(kolSumma, 85);
   s.setColumnWidth(kolSumma + 1, 85);
@@ -188,7 +216,7 @@ function formatera(s) {
 
   // Datum utan sekunder, och telefon som text så inledande nolla inte försvinner.
   s.getRange(2, 1, rader, 1).setNumberFormat('yyyy-mm-dd HH:mm');
-  s.getRange(2, 3, rader, 1).setNumberFormat('@');
+  s.getRange(2, kol('Telefon'), rader, 1).setNumberFormat('@');
 
   // Antalskolumnerna: centrerade, och nollor visas som tomt. Då ser man direkt
   // vad någon faktiskt beställt i stället för ett fält med sex nollor.
@@ -231,13 +259,26 @@ function kolumnBokstav(n) {
 
 /* ---- Härifrån och ner: rör inte ---- */
 
-var KOL_SUMMA = 4 + PRODUKTER.length;      // 0-indexerad kolumn för "Summa kr"
-var KOL_VINST = KOL_SUMMA + 1;
-
 function rubriker() {
-  return ['Tidpunkt', 'Namn', 'Telefon', 'E-post']
+  return FORE
     .concat(PRODUKTER.map(function (p) { return p.namn; }))
-    .concat(['Summa kr', 'Vinst kr', 'Betald', 'Utlämnad', 'Anteckning']);
+    .concat(EFTER);
+}
+
+/* Kolumnens nummer (1 = A) i den layout rubriker() beskriver. Används där
+   installera redan har sett till att Sheetet ser ut så. */
+function kol(namn) {
+  var i = rubriker().indexOf(namn);
+  if (i === -1) throw new Error('Okänd kolumn: ' + namn);
+  return i + 1;
+}
+
+/* Rubrikraden som den faktiskt ser ut i Sheetet just nu. doPost och doGet
+   går efter den i stället för efter rubriker(), så att en beställning som
+   kommer in innan installera hunnit köras ändå hamnar i rätt kolumner. */
+function lasRubriker(s) {
+  var bredd = Math.max(1, s.getLastColumn());
+  return s.getRange(1, 1, 1, bredd).getValues()[0];
 }
 
 function blad() {
@@ -274,14 +315,33 @@ function doPost(e) {
       return n;
     });
 
-    var rad = [new Date(), data.namn || '', data.telefon || '', data.epost || '']
-      .concat(antal)
-      .concat([summa, vinst, '', '', '']);
+    // Värdena knyts till rubriknamn, och raden byggs efter Sheetets faktiska
+    // rubrikrad. Finns en kolumn inte (t.ex. Barn innan installera körts) så
+    // hoppas den bara över — resten hamnar ändå rätt.
+    var varden = {
+      'Tidpunkt': new Date(),
+      'Namn': data.namn || '',
+      // Apostrof tvingar text: annars gör Sheets om 0701234567 till 701234567.
+      'Telefon': data.telefon ? "'" + data.telefon : '',
+      'E-post': data.epost || '',
+      'Summa kr': summa,
+      'Vinst kr': vinst
+    };
+    varden[BARN] = data.barn || '';
+    PRODUKTER.forEach(function (p, i) { varden[p.namn] = antal[i]; });
 
     var s = blad();
-    s.appendRow(rad);
+    var rubrikrad = lasRubriker(s);
+    s.appendRow(rubrikrad.map(function (r) {
+      return Object.prototype.hasOwnProperty.call(varden, r) ? varden[r] : '';
+    }));
+
     // Kryssrutor för Betald och Utlämnad på just den här raden.
-    s.getRange(s.getLastRow(), rubriker().length - 2, 1, 2).insertCheckboxes();
+    var nyRad = s.getLastRow();
+    ['Betald', 'Utlämnad'].forEach(function (namn) {
+      var k = rubrikrad.indexOf(namn) + 1;
+      if (k > 0) s.getRange(nyRad, k).insertCheckboxes();
+    });
 
     // Kvittera direkt efter appendRow. Skulle mejlet nedan hänga sig och
     // klienten göra ett omtag, ska omtaget se raden som redan mottagen.
@@ -315,14 +375,12 @@ function doGet(e) {
 }
 
 function totalVinst() {
-  return summeraKolumn(KOL_VINST);
-}
-
-function summeraKolumn(index) {
   var s = blad();
   var rader = s.getLastRow() - 1;
   if (rader < 1) return 0;
-  return s.getRange(2, index + 1, rader, 1)
+  var k = lasRubriker(s).indexOf('Vinst kr') + 1;
+  if (k < 1) return 0;
+  return s.getRange(2, k, rader, 1)
     .getValues()
     .reduce(function (sum, r) { return sum + (Number(r[0]) || 0); }, 0);
 }
@@ -376,7 +434,8 @@ function skickaBekraftelse(data, antal, summa, vinst) {
     + 'Tack för att du stöttar klassen!\n'
     + AVSANDARNAMN + '\n\n'
     + '---\n'
-    + 'Dina uppgifter: ' + data.namn + ', ' + data.telefon + ', ' + data.epost;
+    + 'Dina uppgifter: ' + data.namn + ', ' + data.telefon + ', ' + data.epost
+    + (data.barn ? '\nHandlat via: ' + data.barn : '');
 
   var html = '<div style="font-family:-apple-system,Segoe UI,sans-serif;'
     + 'font-size:15px;color:#3d2f22;max-width:520px">'
@@ -403,7 +462,9 @@ function skickaBekraftelse(data, antal, summa, vinst) {
     + '<hr style="border:0;border-top:1px solid #e3d7c4">'
     + '<p style="font-size:13px;color:#6b5843">Dina uppgifter: '
     + escapeHtml(data.namn) + ', ' + escapeHtml(data.telefon) + ', '
-    + escapeHtml(data.epost) + '</p>'
+    + escapeHtml(data.epost)
+    + (data.barn ? '<br>Handlat via: ' + escapeHtml(data.barn) : '')
+    + '</p>'
     + '</div>';
 
   MailApp.sendEmail({

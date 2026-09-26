@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Öländsk potatis &amp; rotfrukter — klass 4, Rocknebyskolan</title>
 <meta name="description" content="Beställ öländsk potatis, lök och morötter från Norrgårdens Grönsaker i Ventlinge. Förtjänsten går till klass 4 på Rocknebyskolan.">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -60,6 +60,15 @@
                placeholder="namn@exempel.se" aria-describedby="fel-epost" required>
         <p class="falt__fel" id="fel-epost" hidden></p>
       </div>
+      <div class="falt">
+        <label for="barn">Barn i klassen <span class="valfritt">(valfritt)</span></label>
+        <input id="barn" name="barn" type="text" autocomplete="off" maxlength="60"
+               aria-describedby="hjalp-barn fel-barn">
+        <p class="falt__hjalp" id="hjalp-barn">
+          Handlar du via någon i klassen? Skriv barnets förnamn.
+        </p>
+        <p class="falt__fel" id="fel-barn" hidden></p>
+      </div>
     </section>
 
     <div class="summa" aria-live="polite">
@@ -113,6 +122,6 @@
   </div>
 </div>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

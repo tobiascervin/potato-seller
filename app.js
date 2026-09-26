@@ -295,6 +295,16 @@ const FALT = [
     },
     stada: v => v.toLowerCase(),
   },
+  {
+    id: 'barn',
+    /* Valfritt — tomt är helt okej. Fri text i stället för en rullista, så att
+       barnens namn aldrig behöver stå på en öppen webbsida. */
+    kontrollera(v) {
+      if (v.length > 60) return 'Skriv bara barnets förnamn.';
+      return null;
+    },
+    stada: v => v.replace(/\s+/g, ' '),
+  },
 ];
 
 function visaFaltfel(falt, text) {
@@ -365,6 +375,7 @@ form.addEventListener('submit', async e => {
     namn: varde('namn'),
     telefon: varde('telefon'),
     epost: varde('epost'),
+    barn: varde('barn'),
     varor: Object.fromEntries(PRODUKTER.map(p => [p.id, antal[p.id]])),
   };
   const dinaKr = total();

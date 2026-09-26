@@ -10,20 +10,24 @@ de andra klassföräldrarna.
 |---|---|---|
 | A | Tidpunkt | scriptet |
 | B | Namn | scriptet |
-| C | Telefon | scriptet |
-| D | E-post | scriptet |
-| E | King Edward 10 kg (antal) | scriptet |
-| F | Bintje 10 kg (antal) | scriptet |
-| G | Asterix 10 kg (antal) | scriptet |
-| H | Inova 10 kg (antal) | scriptet |
-| I | Gul lök 5 kg (antal) | scriptet |
-| J | Röd lök 5 kg (antal) | scriptet |
-| K | Morötter 5 kg (antal) | scriptet |
-| L | Summa kr | scriptet |
-| M | Vinst kr | scriptet |
-| N | **Betald** | ni, manuellt |
-| O | **Utlämnad** | ni, manuellt |
-| P | **Anteckning** | ni, manuellt |
+| C | **Barn i klassen** | köparen (valfritt) — eller ni, i efterhand |
+| D | Telefon | scriptet |
+| E | E-post | scriptet |
+| F | King Edward 10 kg (antal) | scriptet |
+| G | Bintje 10 kg (antal) | scriptet |
+| H | Asterix 10 kg (antal) | scriptet |
+| I | Inova 10 kg (antal) | scriptet |
+| J | Gul lök 5 kg (antal) | scriptet |
+| K | Röd lök 5 kg (antal) | scriptet |
+| L | Morötter 5 kg (antal) | scriptet |
+| M | Summa kr | scriptet |
+| N | Vinst kr | scriptet |
+| O | **Betald** | ni, manuellt |
+| P | **Utlämnad** | ni, manuellt |
+| Q | **Anteckning** | ni, manuellt |
+
+Scriptet skriver till kolumnerna efter deras **rubrik**, inte deras position. Flytta
+eller döp därför inte om rubrikerna för hand — kör `installera` om något ser fel ut.
 
 `installera` sköter formateringen åt dig:
 
