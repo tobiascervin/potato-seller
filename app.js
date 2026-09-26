@@ -300,7 +300,7 @@ const FALT = [
     /* Valfritt — tomt är helt okej. Fri text i stället för en rullista, så att
        barnens namn aldrig behöver stå på en öppen webbsida. */
     kontrollera(v) {
-      if (v.length > 60) return 'Skriv bara barnets förnamn.';
+      if (v.length > 60) return 'Namnet ser för långt ut.';
       return null;
     },
     stada: v => v.replace(/\s+/g, ' '),
