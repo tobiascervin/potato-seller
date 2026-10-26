@@ -57,7 +57,18 @@ från `PRODUKTER` i scriptet, så den speglar alltid sortimentet.
 | Till klasskassan | Det som blir kvar — samma siffra som visas på hemsidan |
 
 Längst ner: antal beställningar, obetalda beställningar, obetalt belopp och hur många
-som inte hämtat ut ännu.
+som inte hämtat ut ännu. Kolumnen **Vikt** visar hur mycket varje sort väger totalt.
+
+**Lastning** räknar ut antal säckar och totalvikt. Fyll i släpets och pickupens
+lastvikt i de gula cellerna — det står på registreringsbeviset som *lastvikt*.
+*Marginal* blir positiv om allt ryms. De gula cellerna behålls när `installera`
+körs om.
+
+**Per barn** visar beställningar, säckar och belopp per barn, i bokstavsordning.
+Tabellen räknas ut av scriptet i stället för med formler, så den uppdateras bara
+när `installera` körs. Kör om den när ni fyllt i barn på de gamla raderna.
+Stavningar som bara skiljer sig i stora/små bokstäver eller mellanslag räknas som
+samma barn.
 
 Formlerna är skrivna för att undvika två fällor:
 

@@ -18,6 +18,12 @@ var SAMMANSTALLNING = 'Sammanställning';
 // Talformat. KRONOR visar "0 kr" för nollor; ANTAL göms helt vid noll, så
 // beställningsraderna inte blir en vägg av nollor.
 var KRONOR = '# ##0 "kr";-# ##0 "kr";0 "kr"';
+var KILO = '# ##0 "kg";-# ##0 "kg";0 "kg"';
+
+// Etiketterna för fälten ni själva fyller i under Lastning. installera bygger om
+// fliken, men läser av de här cellerna först och skriver tillbaka dem.
+var SLAP = 'Släpets lastvikt';
+var PICKUP = 'Pickupens lastvikt';
 var ANTAL = '0;-0;';
 
 // Bekräftelsemejl till köparen. Sätt till false för att stänga av helt.
@@ -38,13 +44,13 @@ var EFTER = ['Summa kr', 'Vinst kr', 'Betald', 'Utlämnad', 'Anteckning'];
 
 // Måste matcha PRODUKTER i app.js — samma id, samma priser.
 var PRODUKTER = [
-  { id: 'kingedward', namn: 'King Edward 10 kg', inkop: 75, pris: 130 },
-  { id: 'bintje',     namn: 'Bintje 10 kg',      inkop: 75, pris: 130 },
-  { id: 'asterix',    namn: 'Asterix 10 kg',     inkop: 75, pris: 130 },
-  { id: 'inova',      namn: 'Inova 10 kg',       inkop: 75, pris: 130 },
-  { id: 'gullok',     namn: 'Gul lök 5 kg',      inkop: 40, pris: 75  },
-  { id: 'rodlok',     namn: 'Röd lök 5 kg',      inkop: 40, pris: 75  },
-  { id: 'morotter',   namn: 'Morötter 5 kg',     inkop: 40, pris: 75  }
+  { id: 'kingedward', namn: 'King Edward 10 kg', inkop: 75, pris: 130, kg: 10 },
+  { id: 'bintje',     namn: 'Bintje 10 kg',      inkop: 75, pris: 130, kg: 10 },
+  { id: 'asterix',    namn: 'Asterix 10 kg',     inkop: 75, pris: 130, kg: 10 },
+  { id: 'inova',      namn: 'Inova 10 kg',       inkop: 75, pris: 130, kg: 10 },
+  { id: 'gullok',     namn: 'Gul lök 5 kg',      inkop: 40, pris: 75,  kg: 5  },
+  { id: 'rodlok',     namn: 'Röd lök 5 kg',      inkop: 40, pris: 75,  kg: 5  },
+  { id: 'morotter',   namn: 'Morötter 5 kg',     inkop: 40, pris: 75,  kg: 5  }
 ];
 
 /**
@@ -97,6 +103,14 @@ function skapaSammanstallning() {
   if (!s) {
     s = ss.insertSheet(SAMMANSTALLNING, 0);
   }
+
+  // Lastvikterna har ni skrivit in för hand — läs av dem innan fliken töms.
+  var bevarat = {};
+  if (s.getLastRow() > 0) {
+    s.getRange(1, 1, s.getLastRow(), 2).getValues().forEach(function (r) {
+      if (r[0] === SLAP || r[0] === PICKUP) bevarat[r[0]] = r[1];
+    });
+  }
   s.clear();
   s.clearConditionalFormatRules();
 
@@ -106,7 +120,7 @@ function skapaSammanstallning() {
   var kolNamn = kolumnBokstav(kol('Namn'));
   var bl = "'" + FLIK + "'!";
 
-  var rutnat = [['Vara', 'Antal sålda', 'Till oss', 'Till Niklas', 'Till klasskassan']];
+  var rutnat = [['Vara', 'Antal sålda', 'Till oss', 'Till Niklas', 'Till klasskassan', 'Vikt']];
 
   PRODUKTER.forEach(function (p, i) {
     var k = kolumnBokstav(kol(p.namn));
@@ -116,7 +130,8 @@ function skapaSammanstallning() {
       '=SUM(' + bl + k + '2:' + k + ')',
       '=B' + r + '*' + p.pris,
       '=B' + r + '*' + p.inkop,
-      '=C' + r + '-D' + r
+      '=C' + r + '-D' + r,
+      '=B' + r + '*' + p.kg
     ]);
   });
 
@@ -126,10 +141,11 @@ function skapaSammanstallning() {
     '=SUM(B2:B' + (totalrad - 1) + ')',
     '=SUM(C2:C' + (totalrad - 1) + ')',
     '=SUM(D2:D' + (totalrad - 1) + ')',
-    '=SUM(E2:E' + (totalrad - 1) + ')'
+    '=SUM(E2:E' + (totalrad - 1) + ')',
+    '=SUM(F2:F' + (totalrad - 1) + ')'
   ]);
 
-  s.getRange(1, 1, rutnat.length, 5).setValues(rutnat);
+  s.getRange(1, 1, rutnat.length, 6).setValues(rutnat);
 
   // Två fällor undviks här:
   //
@@ -156,16 +172,17 @@ function skapaSammanstallning() {
   ]);
 
   // Utseende
-  s.getRange(1, 1, 1, 5)
+  s.getRange(1, 1, 1, 6)
     .setBackground('#4f6b3a').setFontColor('#ffffff').setFontWeight('bold');
   s.setFrozenRows(1);
-  s.setColumnWidth(1, 190);
+  s.setColumnWidth(1, 210);
   s.setColumnWidth(2, 110);
-  for (var k = 3; k <= 5; k++) s.setColumnWidth(k, 130);
+  for (var k = 3; k <= 6; k++) s.setColumnWidth(k, 130);
 
   s.getRange(2, 2, PRODUKTER.length + 1, 1).setHorizontalAlignment('center');
   s.getRange(2, 3, PRODUKTER.length + 1, 3).setNumberFormat(KRONOR);
-  s.getRange(totalrad, 1, 1, 5)
+  s.getRange(2, 6, PRODUKTER.length + 1, 1).setNumberFormat(KILO);
+  s.getRange(totalrad, 1, 1, 6)
     .setFontWeight('bold')
     .setBackground('#f0e9dc')
     .setBorder(true, null, null, null, null, null);
@@ -175,6 +192,88 @@ function skapaSammanstallning() {
 
   s.getRange(uppfoljning, 1, 4, 1).setFontWeight('bold');
   s.getRange(uppfoljning + 2, 2).setNumberFormat(KRONOR);
+
+  // ---- Lastning ----
+  // Bara aritmetik, inga funktioner med flera argument — samma språkfälla som ovan.
+  // Marginalen blir positiv om lasten ryms, negativ om den inte gör det.
+  var last = uppfoljning + 5;
+  var slapRad = last + 3, pickupRad = last + 4;
+  s.getRange(last, 1, 6, 2).setValues([
+    ['LASTNING', ''],
+    ['Antal säckar', '=B' + totalrad],
+    ['Total vikt', '=F' + totalrad],
+    [SLAP, bevarat[SLAP] !== undefined ? bevarat[SLAP] : ''],
+    [PICKUP, bevarat[PICKUP] !== undefined ? bevarat[PICKUP] : ''],
+    ['Marginal (plus = det ryms)', '=B' + slapRad + '+B' + pickupRad + '-B' + (last + 2)]
+  ]);
+  s.getRange(last, 1, 1, 6).setBackground('#4f6b3a').setFontColor('#ffffff').setFontWeight('bold');
+  s.getRange(last + 1, 1, 5, 1).setFontWeight('bold');
+  s.getRange(last + 1, 2).setHorizontalAlignment('center');
+  s.getRange(last + 2, 2, 4, 1).setNumberFormat(KILO);
+  s.getRange(slapRad, 2, 2, 1).setBackground('#fff4cc');   // gult = fyll i själv
+  s.getRange(slapRad, 3, 2, 1).setValues([
+    ['← från registreringsbeviset'], ['← från registreringsbeviset']
+  ]).setFontColor('#6b5843');
+  s.getRange(last + 5, 1, 1, 2).setFontWeight('bold');
+
+  // ---- Per barn ----
+  var barnStart = last + 8;
+  var perBarn = raknaPerBarn();
+  s.getRange(barnStart, 1, 1, 5)
+    .setValues([['Per barn', 'Beställningar', 'Säckar', 'Till oss', 'Till klasskassan']])
+    .setBackground('#4f6b3a').setFontColor('#ffffff').setFontWeight('bold');
+  if (perBarn.length) {
+    s.getRange(barnStart + 1, 1, perBarn.length, 5).setValues(perBarn);
+    s.getRange(barnStart + 1, 2, perBarn.length, 2).setHorizontalAlignment('center');
+    s.getRange(barnStart + 1, 4, perBarn.length, 2).setNumberFormat(KRONOR);
+  }
+  s.getRange(barnStart + perBarn.length + 1, 1)
+    .setValue('Uträknat ' + Utilities.formatDate(new Date(), 'Europe/Stockholm', 'yyyy-MM-dd HH:mm')
+      + ' — kör installera igen när ni fyllt i fler barn.')
+    .setFontColor('#6b5843').setFontStyle('italic');
+}
+
+/**
+ * Sålt per barn, uträknat här i stället för med formler: SUMIF och liknande
+ * tar flera argument och kraschar i svenska Sheets (se ovan). Barnens namn är
+ * fri text, så "Elsa Andersson" och "elsa  andersson" räknas som samma barn.
+ * Sorteras i bokstavsordning — inte efter belopp — så det inte blir en topplista.
+ */
+function raknaPerBarn() {
+  var s = blad();
+  var antalRader = s.getLastRow() - 1;
+  if (antalRader < 1) return [];
+
+  var rubrikrad = lasRubriker(s);
+  var data = s.getRange(2, 1, antalRader, rubrikrad.length).getValues();
+  var iNamn = rubrikrad.indexOf('Namn');
+  var iBarn = rubrikrad.indexOf(BARN);
+  var iSumma = rubrikrad.indexOf('Summa kr');
+  var iVinst = rubrikrad.indexOf('Vinst kr');
+  var iVaror = PRODUKTER.map(function (p) { return rubrikrad.indexOf(p.namn); });
+
+  var EJ = 'Ej angivet';
+  var grupper = {};
+  data.forEach(function (r) {
+    if (!String(r[iNamn]).trim()) return;            // tom rad
+    var visning = iBarn >= 0 ? String(r[iBarn]).trim().replace(/\s+/g, ' ') : '';
+    if (!visning) visning = EJ;
+    var nyckel = visning.toLowerCase();
+    var g = grupper[nyckel] || (grupper[nyckel] = { namn: visning, best: 0, sackar: 0, summa: 0, vinst: 0 });
+    g.best += 1;
+    iVaror.forEach(function (i) { if (i >= 0) g.sackar += Number(r[i]) || 0; });
+    g.summa += Number(r[iSumma]) || 0;
+    g.vinst += Number(r[iVinst]) || 0;
+  });
+
+  return Object.keys(grupper)
+    .map(function (k) { return grupper[k]; })
+    .sort(function (a, b) {
+      if (a.namn === EJ) return 1;
+      if (b.namn === EJ) return -1;
+      return a.namn.localeCompare(b.namn, 'sv');
+    })
+    .map(function (g) { return [g.namn, g.best, g.sackar, g.summa, g.vinst]; });
 }
 
 /**
