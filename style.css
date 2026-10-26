@@ -419,3 +419,20 @@ main, .hero, .footer { max-width: 560px; margin: 0 auto; }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ---------- Stängd försäljning ---------- */
+
+.stangd { padding-top: 64px; }
+
+.stangd__ruta { text-align: center; }
+
+.stangd__rubrik {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.stangd__text {
+  margin: 6px 0 0;
+  color: var(--jord-ljus);
+}

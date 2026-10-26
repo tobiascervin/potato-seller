@@ -3,125 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Öländsk potatis &amp; rotfrukter — klass 4, Rocknebyskolan</title>
-<meta name="description" content="Beställ öländsk potatis, lök och morötter från Norrgårdens Grönsaker i Ventlinge. Förtjänsten går till klass 4 på Rocknebyskolan.">
-<link rel="stylesheet" href="style.css?v=5">
+<title>Försäljningen är stängd — klass 4, Rocknebyskolan</title>
+<meta name="description" content="Klass 4 på Rocknebyskolans försäljning av öländsk potatis, lök och morötter är stängd. Tack till alla som beställt!">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
-<header class="hero">
-  <p class="hero__eyebrow">Klass 4 på Rocknebyskolan säljer</p>
-  <h1 class="hero__title">Öländsk potatis<br>lök &amp; morötter</h1>
+<header class="hero stangd">
+  <p class="hero__eyebrow">Klass 4 på Rocknebyskolan</p>
+  <h1 class="hero__title">Försäljningen<br>är stängd</h1>
   <p class="hero__lead">
-    Odlat av Niklas på <strong>Norrgårdens Grönsaker</strong> i Ventlinge på Öland.
-    Hela förtjänsten går till klasskassan — till klassresan, utflykter och sånt
-    som gör fyran roligare.
+    Tack till alla som beställt öländsk potatis, lök och morötter från Niklas på
+    <strong>Norrgårdens Grönsaker</strong> i Ventlinge! Sista beställningsdag var
+    18 oktober, och det går inte längre att beställa.
   </p>
 
-  <div class="kassa" id="kassa" hidden>
-    <p class="kassa__label">Hittills insamlat till klasskassan</p>
-    <p class="kassa__sum"><span id="kassa-sum">0</span> kr</p>
-    <div class="kassa__bar" id="kassa-bar" hidden>
-      <div class="kassa__fill" id="kassa-fill"></div>
-    </div>
-    <p class="kassa__meta" id="kassa-meta"></p>
+  <div class="kassa stangd__ruta">
+    <p class="stangd__rubrik">Har du beställt?</p>
+    <p class="stangd__text">
+      Då får du information om tid och plats för utlämningen via mejl.
+      Betalning sker med Swish när du hämtar.
+    </p>
   </div>
 
   <p class="hero__deadline">
-    Sista beställningsdag: <strong id="sista-dag">—</strong>
+    Frågor? Ring <strong>Tobias, 073-726 60 67</strong>
   </p>
 </header>
 
-<main>
-  <form id="order" novalidate>
-
-    <section class="section">
-      <h2 class="section__title">Vad vill du ha?</h2>
-      <ul class="varor" id="varor"></ul>
-    </section>
-
-    <section class="section">
-      <h2 class="section__title">Dina uppgifter</h2>
-      <div class="falt">
-        <label for="namn">Namn</label>
-        <input id="namn" name="namn" type="text" autocomplete="name"
-               aria-describedby="fel-namn" required>
-        <p class="falt__fel" id="fel-namn" hidden></p>
-      </div>
-      <div class="falt">
-        <label for="telefon">Telefon</label>
-        <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel"
-               placeholder="070-123 45 67" aria-describedby="fel-telefon" required>
-        <p class="falt__fel" id="fel-telefon" hidden></p>
-      </div>
-      <div class="falt">
-        <label for="epost">E-post</label>
-        <input id="epost" name="epost" type="email" autocomplete="email" inputmode="email"
-               placeholder="namn@exempel.se" aria-describedby="fel-epost" required>
-        <p class="falt__fel" id="fel-epost" hidden></p>
-      </div>
-      <div class="falt">
-        <label for="barn">Barn i klassen <span class="valfritt">(valfritt)</span></label>
-        <input id="barn" name="barn" type="text" autocomplete="off" maxlength="60"
-               aria-describedby="hjalp-barn fel-barn">
-        <p class="falt__hjalp" id="hjalp-barn">
-          Handlar du via någon i klassen? Skriv barnets för- och efternamn.
-        </p>
-        <p class="falt__fel" id="fel-barn" hidden></p>
-      </div>
-    </section>
-
-    <div class="summa" aria-live="polite">
-      <div class="summa__rad">
-        <span>Att betala</span>
-        <strong><span id="summa-total">0</span> kr</strong>
-      </div>
-      <p class="summa__vinst">
-        varav <strong><span id="summa-vinst">0</span> kr</strong> går till klasskassan
-      </p>
-    </div>
-
-    <p class="fel" id="fel" role="alert" hidden></p>
-
-    <button class="skicka" id="skicka" type="submit">Skicka beställning</button>
-
-    <p class="finstilt">
-      Betalning sker med Swish vid utlämning. När beställningen stänger den
-      18 oktober mejlar vi ut tid och plats till alla som beställt.
-    </p>
-  </form>
-</main>
-
-<footer class="footer">
-  <p>
-    Klass 4 på Rocknebyskolan. Potatisen kommer från Niklas på Norrgårdens
-    Grönsaker i Ventlinge.<br>
-    Frågor? Hör av dig till någon av klassföräldrarna.
-  </p>
-</footer>
-
-<div class="overlay" id="overlay" hidden>
-  <canvas class="konfetti" id="konfetti" aria-hidden="true"></canvas>
-  <div class="tack" role="dialog" aria-modal="true" aria-labelledby="tack-rubrik" id="tack">
-    <p class="tack__eyebrow">Tack!</p>
-    <h2 class="tack__rubrik" id="tack-rubrik">
-      Du gav klass 4<br><span class="tack__belopp" id="tack-belopp">0 kr</span>
-    </h2>
-
-    <ul class="tack__lista" id="tack-lista"></ul>
-
-    <p class="tack__swishrad">
-      Du betalar <strong><span id="tack-summa">0</span> kr</strong> med Swish
-      vid utlämningen. Vi mejlar tid och plats när beställningen stängt
-      den 18 oktober.
-    </p>
-
-    <p class="tack__gemensamt" id="tack-gemensamt" hidden></p>
-
-    <button type="button" class="stang" id="stang">Klart</button>
-  </div>
-</div>
-
-<script src="app.js?v=5"></script>
 </body>
 </html>
