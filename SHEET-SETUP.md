@@ -40,6 +40,10 @@ eller döp därför inte om rubrikerna för hand — kör `installera` om något
 - Summa och Vinst visas som `465 kr`, med Summa i fetstil.
 - **Betalda rader tonas gröna.** Kryssa i `Betald` så byter hela raden färg, och det
   som återstår syns direkt.
+- **Rader med en anteckning tonas orange** — de hämtas vid ett annat tillfälle än
+  den ordinarie utlämningen. Färgen försvinner när `Utlämnad` kryssas i. Orange går
+  före grönt, så en förbetald beställning som hämtas senare syns ändå. Det gäller
+  bara kolumnen `Anteckning`, inte Googles cellkommentarer.
 - Kryssrutor i `Betald` och `Utlämnad` läggs till automatiskt på varje ny beställning.
 
 Kör om `installera` när du vill — den rör bara utseendet, aldrig innehållet.

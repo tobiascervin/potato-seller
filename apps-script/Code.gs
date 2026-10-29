@@ -329,13 +329,32 @@ function formatera(s) {
 
   s.getRange(2, kolAnteckning, rader, 1).setWrap(true);
 
+  var hela = s.getRange(2, 1, rader, kolumner);
+  var anteckning = '$' + kolumnBokstav(kolAnteckning) + '2';
+  var utlamnad = '$' + kolumnBokstav(kol('Utlämnad')) + '2';
+
+  // Rader med en anteckning tonas orange: de hämtas vid ett annat tillfälle än
+  // den ordinarie utlämningen. Färgen försvinner när Utlämnad kryssas i.
+  // Aritmetik i stället för AND(): en funktion med flera argument kraschar i
+  // svenska Sheets (se Sammanställningen). (a<>"")*(1-b)=1 betyder "a har text
+  // och b är inte ikryssad".
+  var regelAnnanTid = SpreadsheetApp.newConditionalFormatRule()
+    .whenFormulaSatisfied('=(' + anteckning + '<>"")*(1-' + utlamnad + ')=1')
+    .setBackground('#fde3c3')
+    .setRanges([hela])
+    .build();
+
   // Betalda rader tonas gröna, så man ser på en halv sekund vad som återstår.
-  var regel = SpreadsheetApp.newConditionalFormatRule()
+  var regelBetald = SpreadsheetApp.newConditionalFormatRule()
     .whenFormulaSatisfied('=$' + kolumnBokstav(kolBetald) + '2')
     .setBackground('#eaf3e3')
-    .setRanges([s.getRange(2, 1, rader, kolumner)])
+    .setRanges([hela])
     .build();
-  s.setConditionalFormatRules([regel]);
+
+  // Ordningen avgör när båda gäller: den första regeln som matchar vinner.
+  // Orange före grönt, så en förbetald beställning som ska hämtas senare
+  // fortfarande syns tills den är utlämnad.
+  s.setConditionalFormatRules([regelAnnanTid, regelBetald]);
 
   // Kryssrutor på de rader som redan finns. Nya rader får sina i doPost —
   // annars skulle tusen tomma kryssrutor räknas som obetalda beställningar.
